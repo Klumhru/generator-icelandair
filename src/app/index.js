@@ -1,7 +1,8 @@
 import yeoman from 'yeoman-generator'
 import _s from 'underscore.string'
 import chalk from 'chalk'
-import { defaults, validate } from '../../util'
+import defaults from '../_util/defaults'
+import * as validate from '../_util/validate'
 
 let projectType
 let gitRepo

@@ -1,6 +1,6 @@
-import fs  from 'fs'
-import path  from 'path'
-import _s  from 'underscore.string'
+import fs from 'fs'
+import path from 'path'
+import _s from 'underscore.string'
 
 const _defaultType = 'micro'
 const _types = [
@@ -18,11 +18,11 @@ const _tiers = [
 const _getGenerators = () => {
   const projectTypes = []
 
-  fs.readdirSync(path.resolve(__dirname, '../generators')).filter((file) => {
-    if (file !== 'app' && fs.statSync(path.resolve(__dirname, '../generators', file)).isDirectory()) {
+  fs.readdirSync(path.resolve(__dirname, '../')).filter((file) => {
+    if (file !== 'app' && file.indexOf('_') !== 0 && fs.statSync(path.resolve(__dirname, '../', file)).isDirectory()) {
       projectTypes.push(_s.humanize(file))
     }
-    return fs.statSync(path.resolve(__dirname, '../generators', file)).isDirectory() ? file : false
+    return fs.statSync(path.resolve(__dirname, '../', file)).isDirectory() ? file : false
   })
 
   return projectTypes

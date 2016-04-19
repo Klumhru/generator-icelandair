@@ -1,54 +1,23 @@
 import yeoman from 'yeoman-generator'
 import _s from 'underscore.string'
 import chalk from 'chalk'
-import { defaults, validate } from '../../util'
+import * as prompts from '../_util/prompts'
 
 module.exports = yeoman.Base.extend({
   init() {
     const cb = this.async()
     const self = this
 
-    this.prompt([
-      {
-        name: 'projectName',
-        message: 'What do you want to name your project?',
-        default: defaults.projectName,
-        filter: (x) => _s.slugify(x),
-        validate: (x) => validate.dns(x),
-      },
-      {
-        type: 'list',
-        name: 'type',
-        message: 'Type of project (micro/web/etc)?',
-        default: defaults.type,
-        choices: defaults.types,
-      },
-      {
-        type: 'list',
-        name: 'tier',
-        message: 'Which tier?',
-        default: defaults.tier,
-        choices: defaults.tiers,
-      },
-      {
-        name: 'replicaCount',
-        message: 'How many replicas would you like?',
-        default: 2,
-        validate: (x) => validate.number(x),
-      },
-      {
-        name: 'containerPort',
-        message: 'What port should the container use?',
-        default: 10000,
-        validate: (x) => validate.port(x),
-      },
-      {
-        name: 'projectDescription',
-        message: 'What is this project supposed to do?',
-        default: 'Raison d\'être',
-        validate: (x) => validate.required(x),
-      },
-    ], props => {
+    const promptArr = []
+
+    promptArr.push(prompts.projectName)
+    promptArr.push(prompts.type)
+    promptArr.push(prompts.tier)
+    promptArr.push(prompts.replicaCount)
+    promptArr.push(prompts.containerPort)
+    promptArr.push(prompts.projectDescription)
+
+    this.prompt(promptArr, (props) => {
       const tpl = {
         projectName: props.projectName,
         camelProjectName: _s.camelize(props.projectName),

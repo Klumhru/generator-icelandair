@@ -3,6 +3,7 @@ const yeoman = require('yeoman-generator')
 const _s = require('underscore.string')
 const chalk = require('chalk')
 const getDefaults = require('../../util/defaults')
+const validate = require('../../util/validate')
 
 
 module.exports = yeoman.Base.extend({
@@ -17,9 +18,8 @@ module.exports = yeoman.Base.extend({
         name: 'projectName',
         message: 'What do you want to name your project?',
         default: defaults.projectName,
-        filter: x => _s.slugify(x),
-        // eslint-disable-next-line max-len, no-nested-ternary
-        validate: x => x.length === 0 ? 'You have to set a project name' : (x.length > 28 ? 'Must be DNS compliant, max 28 characters' : true),
+        filter: (x) => _s.slugify(x),
+        validate: (x) => validate.dns(x),
       },
       {
         type: 'list',
@@ -39,14 +39,13 @@ module.exports = yeoman.Base.extend({
         name: 'replicaCount',
         message: 'How many replicas would you like?',
         default: 2,
-        filter: x => parseInt(x, 10),
-        validate: x => x.toString().length > 0 ? true : 'You have to set a replicaCount',
+        validate: (x) => validate.number(x),
       },
       {
         name: 'containerPort',
         message: 'What port should the container use?',
         default: 10000,
-        validate: x => x.toString().length > 0 ? true : 'You have to set a containerPort',
+        validate: (x) => validate.port(x),
       },
       {
         name: 'projectDescription',

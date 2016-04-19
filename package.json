@@ -16,7 +16,7 @@
     "test": "ava"
   },
   "files": [
-    "app"
+    "generators"
   ],
   "keywords": [
     "yeoman-generator",

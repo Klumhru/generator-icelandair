@@ -1,19 +1,19 @@
 {
-  "name": "generator-nm",
-  "version": "2.7.0",
-  "description": "Scaffold out a node module",
-  "license": "MIT",
-  "repository": "sindresorhus/generator-nm",
+  "name": "generator-icelandair",
+  "version": "0.1.0",
+  "description": "Scaffold out a new project",
+  "license": "UNLICENSED",
+  "repository": "Icelandair/generator-icelandair",
   "author": {
-    "name": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com"
+    "name": "Benedikt D Valdez",
+    "email": "benediktvaldez@gmail.com",
+    "url": "http://bdvs.info"
   },
   "engines": {
     "node": ">=4"
   },
   "scripts": {
-    "test": "xo && ava"
+    "test": "ava"
   },
   "files": [
     "app"
@@ -28,8 +28,7 @@
     "module",
     "node_module",
     "node-module",
-    "init",
-    "sindre"
+    "init"
   ],
   "dependencies": {
     "humanize-url": "^1.0.1",
@@ -39,16 +38,13 @@
     "yeoman-generator": "^0.22.1"
   },
   "devDependencies": {
-    "ava": "*",
+    "ava": "^0.14.0",
+    "babel-eslint": "^6.0.2",
+    "eslint": "^2.8.0",
+    "eslint-config-airbnb": "^6.2.0",
+    "eslint-plugin-import": "^1.5.0",
     "pify": "^2.2.0",
-    "xo": "*",
     "yeoman-assert": "^2.0.0",
     "yeoman-test": "^1.0.0"
-  },
-  "xo": {
-    "esnext": true,
-    "ignores": [
-      "app/templates/**"
-    ]
   }
 }

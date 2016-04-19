@@ -1,0 +1,47 @@
+{
+  "name": "<%= projectName %>",
+  "version": "0.0.0",
+  "description": "<%= projectDescription %>",
+  "license": "UNLICENSED",
+  "repository": "Icelandair/<%= projectName %>",
+  "private": true,
+  "author": {
+    "name": "<%= name %>",
+    "email": "<%= email %>"
+  },
+  "scripts": {
+    "build": "babel src -d dist",
+    "dev": "supervisor --quiet --watch src --no-restart-on exit --exec npm test",
+    "lint": "eslint src && eslint test",
+    "start": "NODE_ENV=development supervisor --quiet --watch src --no-restart-on exit --exec node src/dev.js",
+    "test": "NODE_ENV=test nyc --reporter=text --reporter=html ava"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "ava": {
+    "files": [
+      "src/**/*-test.js"
+    ],
+    "source": [
+      "src/**/*.js",
+      "!src/**/*-test.js"
+    ],
+    "failFast": true,
+    "verbose": true,
+    "require": [
+      "babel-register"
+    ],
+    "babel": {
+      "presets": [
+        "es2015"
+      ],
+      "plugins": [
+        "syntax-async-functions",
+        "transform-regenerator",
+        "transform-runtime",
+        "add-module-exports"
+      ],
+      "sourceMaps": "inline"
+    }
+  }
+}

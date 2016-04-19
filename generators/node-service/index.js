@@ -1,6 +1,8 @@
 'use strict'
 const yeoman = require('yeoman-generator')
 const _s = require('underscore.string')
+const chalk = require('chalk')
+const getDefaults = require('../../util/defaults')
 
 
 module.exports = yeoman.Base.extend({
@@ -8,11 +10,13 @@ module.exports = yeoman.Base.extend({
     const cb = this.async()
     const self = this
 
+    const defaults = getDefaults(process.cwd())
+
     this.prompt([
       {
         name: 'projectName',
         message: 'What do you want to name your project?',
-        default: this.appname,
+        default: defaults.projectName,
         filter: x => _s.slugify(x),
         // eslint-disable-next-line max-len, no-nested-ternary
         validate: x => x.length === 0 ? 'You have to set a project name' : (x.length > 28 ? 'Must be DNS compliant, max 28 characters' : true),
@@ -21,24 +25,15 @@ module.exports = yeoman.Base.extend({
         type: 'list',
         name: 'type',
         message: 'Type of project (micro/web/etc)?',
-        default: 'micro',
-        choices: [
-          'micro',
-          'domain',
-          'vendor',
-          'web',
-        ],
+        default: defaults.type,
+        choices: defaults.types,
       },
       {
         type: 'list',
         name: 'tier',
         message: 'Which tier?',
-        default: 'internal',
-        choices: [
-          'backend',
-          'internal',
-          'frontend',
-        ],
+        default: defaults.tier,
+        choices: defaults.tiers,
       },
       {
         name: 'replicaCount',
@@ -64,6 +59,7 @@ module.exports = yeoman.Base.extend({
         camelProjectName: _s.camelize(props.projectName),
         type: props.type,
         tier: props.tier,
+        replicaCount: props.replicaCount,
         containerPort: props.containerPort,
         projectDescription: props.projectDescription,
         name: self.user.git.name(),
@@ -91,7 +87,7 @@ module.exports = yeoman.Base.extend({
     })
   },
   install() {
-    console.log('Installing dependencies (relevant xkcd: http://xkcd.com/303/)')
+    console.log(chalk.blue('Installing dependencies (relevant xkcd: http://xkcd.com/303/)'))
     this.npmInstall([
       'babel-plugin-transform-runtime',
       'koa',

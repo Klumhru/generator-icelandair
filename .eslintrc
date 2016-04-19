@@ -4,7 +4,7 @@
   "rules": {
     "arrow-body-style": ["off"],
     "no-confusing-arrow": ["off"],
-    "no-console": ["warn"],
+    "no-console": ["off"],
     "func-names": ["off"],
     "no-inline-comments": ["error"],
     "no-param-reassign": ["off"],

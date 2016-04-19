@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+'use strict'
+const fs = require('fs')
+const path = require('path')
+const ncp = require('ncp').ncp
+ncp.limit = 16
+
+fs.readdirSync(path.resolve(__dirname, '../src')).forEach((file) => {
+  const source = path.resolve(__dirname, '../src', file)
+  const sourceTpl = path.resolve(source, 'templates')
+  const destination = source.replace('generator-icelandair/src', 'generator-icelandair/generators')
+  if (fs.statSync(source).isDirectory()) {
+    ncp(sourceTpl, path.resolve(destination, 'templates'), (err) => {
+      if (err) {
+        return
+      }
+    })
+  }
+  // return fs.statSync(path.resolve(__dirname, '../generators', file)).isDirectory() ? file : false
+})

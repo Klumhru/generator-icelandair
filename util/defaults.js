@@ -1,7 +1,6 @@
-'use strict'
-const fs = require('fs')
-const path = require('path')
-const _s = require('underscore.string')
+import fs  from 'fs'
+import path  from 'path'
+import _s  from 'underscore.string'
 
 const _defaultType = 'micro'
 const _types = [
@@ -29,7 +28,7 @@ const _getGenerators = () => {
   return projectTypes
 }
 
-module.exports = (cwd) => {
+const _defaults = (cwd) => {
   const defaultRepoName = cwd.split('/').pop()
   let defaultProjectName = defaultRepoName
   let defaultType = _defaultType
@@ -56,3 +55,5 @@ module.exports = (cwd) => {
     generators,
   }
 }
+
+export default _defaults(process.cwd())

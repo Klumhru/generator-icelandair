@@ -1,17 +1,12 @@
-'use strict'
-const yeoman = require('yeoman-generator')
-const _s = require('underscore.string')
-const chalk = require('chalk')
-const getDefaults = require('../../util/defaults')
-const validate = require('../../util/validate')
-
+import yeoman from 'yeoman-generator'
+import _s from 'underscore.string'
+import chalk from 'chalk'
+import { defaults, validate } from '../../util'
 
 module.exports = yeoman.Base.extend({
   init() {
     const cb = this.async()
     const self = this
-
-    const defaults = getDefaults(process.cwd())
 
     this.prompt([
       {
@@ -51,6 +46,7 @@ module.exports = yeoman.Base.extend({
         name: 'projectDescription',
         message: 'What is this project supposed to do?',
         default: 'Raison d\'être',
+        validate: (x) => validate.required(x),
       },
     ], props => {
       const tpl = {

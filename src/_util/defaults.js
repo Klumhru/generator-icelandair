@@ -28,32 +28,42 @@ const _getGenerators = () => {
   return projectTypes
 }
 
-const _defaults = (cwd) => {
-  const defaultRepoName = cwd.split('/').pop()
-  let defaultProjectName = defaultRepoName
-  let defaultType = _defaultType
-  if (defaultProjectName.indexOf('.') !== -1) {
-    const split = defaultProjectName.split('.')
+const _parseNameAndType = (name) => {
+  let pName = name
+  let pType = _defaultType
+  if (pName.indexOf('.') !== -1) {
+    const split = pName.split('.')
 
     if (_types.indexOf(split[0]) !== -1) {
-      defaultType = split[0]
+      pType = split[0]
       split.shift()
-      defaultProjectName = split.join('.')
+      pName = split.join('.')
     }
   }
+
+  return [pName, pType]
+}
+
+export const getDefaults = (gitRepo) => {
+  const defaultRepoName = (gitRepo || process.cwd()).split('/').pop()
+
+  const [defaultProjectName, defaultType] = _parseNameAndType(defaultRepoName)
 
   const generators = _getGenerators()
 
   return {
     types: _types,
-    tiers: _tiers,
     type: defaultType,
+
+    tiers: _tiers,
     tier: _defaultTier,
-    repoName: defaultRepoName,
-    projectName: defaultProjectName,
+
     generator: generators[0],
     generators,
+
+    repoName: defaultRepoName,
+    projectName: defaultProjectName,
   }
 }
 
-export default _defaults(process.cwd())
+export const defaults = getDefaults()

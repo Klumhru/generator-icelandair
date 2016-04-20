@@ -1,14 +1,14 @@
 import yeoman from 'yeoman-generator'
 import _s from 'underscore.string'
 import chalk from 'chalk'
-import defaults from '../_util/defaults'
+import { defaults } from '../_util/defaults'
 import * as validate from '../_util/validate'
 
 let projectType
 let gitRepo
 
 module.exports = yeoman.Base.extend({
-  init() {
+  prompting() {
     const cb = this.async()
 
     this.prompt([{
@@ -32,30 +32,38 @@ module.exports = yeoman.Base.extend({
     })
   },
   startSubgenerator() {
-    if (projectType) {
-      this.spawnCommandSync('yo', [`icelandair:${projectType}`])
-    }
-  },
-  git() {
-    if (!gitRepo) {
-      console.log(chalk.red('No gitRepo defined!'))
-      return
-    }
-    this.spawnCommandSync('git', ['init'], { stdio: 'ignore' })
-    this.spawnCommandSync('git', ['flow', 'init', '-d'], { stdio: 'ignore' })
-    this.spawnCommandSync('git', ['config', 'gitflow.prefix.versiontag', 'v'], { stdio: 'ignore' })
-    this.spawnCommandSync('git', ['remote', 'add', 'origin', `git@github.com:${gitRepo}.git`], { stdio: 'ignore' })
-    this.spawnCommandSync('git', ['fetch', '-v'], { stdio: 'ignore' })
-    this.spawnCommandSync('git', ['add', '-A'], { stdio: 'ignore' })
-    this.spawnCommandSync('git', ['commit', '-m', `Generated new ${projectType}`], { stdio: 'ignore' })
-    console.log(
-      `${chalk.cyan('Initialized git repository with flow config, and commited generated code')}
-      \n${chalk.yellow('Current status:')}`
-    )
-    this.spawnCommandSync('git', ['status'])
-    console.log(
-      `${chalk.yellow('Note: unpushed!')}
-      \n${chalk.blue(`Make sure to create repository with the name "${gitRepo}" on GitHub before pushing.`)}`
-    )
+    this.composeWith(`icelandair:${projectType}`, {
+      options: {
+        gitRepo,
+        projectType,
+        nested: true,
+      },
+    }, {
+      local: require.resolve(`./../${projectType}`),
+    }).on('end', () => {
+      console.log(
+        chalk.bold.cyan('Successfully generated new ') +
+        chalk.bold.green(_s.humanize(projectType).toLowerCase())
+      )
+      if (!gitRepo) {
+        console.log(
+          chalk.bold.red('Wont initialize git since no gitRepo was provided')
+        )
+        return
+      }
+      this.spawnCommandSync('git', ['init'], { stdio: 'ignore' })
+      this.spawnCommandSync('git', ['flow', 'init', '-d'], { stdio: 'ignore' })
+      this.spawnCommandSync('git', ['config', 'gitflow.prefix.versiontag', 'v'], { stdio: 'ignore' })
+      this.spawnCommandSync('git', ['remote', 'add', 'origin', `git@github.com:${gitRepo}.git`], { stdio: 'ignore' })
+      this.spawnCommandSync('git', ['add', '-A'], { stdio: 'ignore' })
+      this.spawnCommandSync('git', ['commit', '-m', `Generated new ${projectType}`], { stdio: 'ignore' })
+
+      console.log(
+        chalk.bold.cyan('Initialized git repository with flow config & commited generated code\n') +
+        chalk.bold.cyan('Make sure to a create repository with the name ') +
+        chalk.bold.green(gitRepo) +
+        chalk.bold.cyan(' on GitHub before pushing.')
+      )
+    })
   },
 })

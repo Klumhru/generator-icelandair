@@ -4,14 +4,19 @@ import chalk from 'chalk'
 import * as prompts from '../_util/prompts'
 
 module.exports = yeoman.Base.extend({
-  init() {
+  prompting() {
     const cb = this.async()
     const self = this
 
+    if (!this.options.nested) {
+      console.log(chalk.red(chalk.bold('Please don\'t run subgenerators directly')))
+      return
+    }
+
     const promptArr = []
 
-    promptArr.push(prompts.projectName)
-    promptArr.push(prompts.type)
+    promptArr.push(prompts.projectName(this.options.gitRepo.split('/').pop()))
+    promptArr.push(prompts.type(this.options.gitRepo.split('/').pop()))
     promptArr.push(prompts.tier)
     promptArr.push(prompts.replicaCount)
     promptArr.push(prompts.containerPort)

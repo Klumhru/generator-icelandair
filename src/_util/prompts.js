@@ -1,21 +1,27 @@
 import _s from 'underscore.string'
-import defaults from './defaults'
+import { defaults, getDefaults } from './defaults'
 import * as validate from './validate'
 
-export const projectName = {
-  name: 'projectName',
-  message: 'What do you want to name your project?',
-  default: defaults.projectName,
-  filter: (x) => _s.slugify(x),
-  validate: (x) => validate.dns(x),
+export const projectName = (gitRepo) => {
+  return {
+    name: 'projectName',
+    message: 'What do you want to name your project?',
+    default: getDefaults(gitRepo).projectName,
+    filter: (x) => _s.slugify(x),
+    validate: (x) => validate.dns(x),
+  }
 }
-export const type = {
-  type: 'list',
-  name: 'type',
-  message: 'Type of project (micro/web/etc)?',
-  default: defaults.type,
-  choices: defaults.types,
+
+export const type = (gitRepo) => {
+  return {
+    type: 'list',
+    name: 'type',
+    message: 'Type of project (micro/web/etc)?',
+    default: getDefaults(gitRepo).type,
+    choices: defaults.types,
+  }
 }
+
 export const tier = {
   type: 'list',
   name: 'tier',

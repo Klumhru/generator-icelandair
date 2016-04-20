@@ -2,7 +2,7 @@ import yeoman from 'yeoman-generator'
 import _s from 'underscore.string'
 import chalk from 'chalk'
 import { defaults } from '../_util/defaults'
-import * as validate from '../_util/validate'
+import { required } from '../_util/validate'
 
 let projectType
 let gitRepo
@@ -17,21 +17,22 @@ module.exports = yeoman.Base.extend({
       message: 'What type of project do you need?',
       default: defaults.generator,
       choices: defaults.generators,
-      validate: (x) => validate.required(x, 'You have to pick a project type'),
+      validate: (x) => required(x, 'You have to pick a project type'),
     }, {
       type: 'input',
       name: 'gitRepo',
       message: 'Name of git repository? Icelandair/**',
       default: defaults.repoName,
-      filter: x => `Icelandair/${x}`,
-      validate: (x) => validate.required(x, 'You have to set a gitRepo'),
-    }], props => {
+      filter: (x) => `Icelandair/${x}`,
+      validate: (x) => required(x, 'You have to set a gitRepo'),
+    }], (props) => {
       projectType = _s.slugify(props.projectType)
       gitRepo = props.gitRepo
+
       cb()
     })
   },
-  startSubgenerator() {
+  compose() {
     this.composeWith(`icelandair:${projectType}`, {
       options: {
         gitRepo,

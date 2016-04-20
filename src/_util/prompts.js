@@ -16,7 +16,7 @@ export const type = (gitRepo) => {
   return {
     type: 'list',
     name: 'type',
-    message: 'Type of project (micro/web/etc)?',
+    message: 'Type of project?',
     default: getDefaults(gitRepo).type,
     choices: defaults.types,
   }

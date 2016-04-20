@@ -2,14 +2,14 @@ import yeoman from 'yeoman-generator'
 import _s from 'underscore.string'
 import chalk from 'chalk'
 import * as prompts from '../_util/prompts'
+import { coffeeFencing } from '../_util/console'
 
 module.exports = yeoman.Base.extend({
   prompting() {
     const cb = this.async()
-    const self = this
 
     if (!this.options.nested) {
-      console.log(chalk.red(chalk.bold('Please don\'t run subgenerators directly')))
+      console.log(chalk.bold.yellow('Run `yo icelandair` to get started'))
       return
     }
 
@@ -31,17 +31,17 @@ module.exports = yeoman.Base.extend({
         replicaCount: props.replicaCount,
         containerPort: props.containerPort,
         projectDescription: props.projectDescription,
-        name: self.user.git.name(),
-        email: self.user.git.email(),
+        name: this.user.git.name(),
+        email: this.user.git.email(),
       }
 
       const mv = (from, to) => {
-        self.fs.move(self.destinationPath(from), self.destinationPath(to))
+        this.fs.move(this.destinationPath(from), this.destinationPath(to))
       }
 
-      self.fs.copyTpl([
-        `${self.templatePath()}/**`,
-      ], self.destinationPath(), tpl)
+      this.fs.copyTpl([
+        `${this.templatePath()}/**`,
+      ], this.destinationPath(), tpl)
 
       mv('_babelrc', '.babelrc')
       mv('_editorconfig', '.editorconfig')
@@ -56,12 +56,15 @@ module.exports = yeoman.Base.extend({
     })
   },
   install() {
-    console.log(chalk.blue('Installing dependencies (relevant xkcd: http://xkcd.com/303/)'))
+    console.log(chalk.blue.bold('Installing dependencies.'))
+    console.log(chalk.cyan.bold('This might take a while – maybe go for some coffee, or duel?'))
+    coffeeFencing()
+
     this.npmInstall([
       'babel-plugin-transform-runtime',
       'koa',
       'koa-router',
-    ], { save: true })
+    ], { save: true, stdio: 'ignore' })
     this.npmInstall([
       'ava',
       'babel-cli',
@@ -77,6 +80,6 @@ module.exports = yeoman.Base.extend({
       'supertest',
       'supertest-as-promised',
       'supervisor',
-    ], { saveDev: true })
+    ], { saveDev: true, stdio: 'ignore' })
   },
 })

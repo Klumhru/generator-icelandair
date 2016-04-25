@@ -22,22 +22,22 @@ ifndef DOCKER_BUILDER_IMAGE
 	DOCKER_BUILDER_IMAGE := ${DOCKER_REGISTRY_HOST}/${DOCKER_USER}/${PROJECT_NAME}-builder:${PIPELINE_VERSION}
 endif
 
-
 # Development
 provision:
-	git flow init -d && \
-	git config gitflow.prefix.versiontag "v" && \
-	npm install --silent --no-progress
-
-test:
-	npm run lint && \
-	npm run test
+	# git flow init -d && \
+	# git config gitflow.prefix.versiontag "v" && \
+	go get -t -u ./...
 
 dev:
-	npm run dev
+	@go get github.com/smartystreets/goconvey
+	@goconvey -port 8081 -watchedSuffixes .go,.json
+
+test:
+	@go test ./...
 
 build:
-	npm run build
+	go get ./...
+	CGO_ENABLED=0 go build -o tmp/micro.static-content
 
 # Container
 docker:

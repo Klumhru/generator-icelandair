@@ -50,7 +50,6 @@ module.exports = yeoman.Base.extend({
         this.fs.move(this.destinationPath(from), this.destinationPath(to))
       }
 
-      console.log('bABABA', this.templatePath(), this.destinationPath(), tpl)
       this.fs.copyTpl([
         `${this.templatePath()}/**`,
       ], this.destinationPath(), tpl)

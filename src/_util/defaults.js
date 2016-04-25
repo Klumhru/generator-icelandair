@@ -20,7 +20,6 @@ const _getGenerators = () => {
 
   fs.readdirSync(path.resolve(__dirname, '../')).filter((file) => {
     if (file !== 'app' && file.indexOf('_') !== 0 && fs.statSync(path.resolve(__dirname, '../', file)).isDirectory()) {
-      console.log('icking up', file)
       projectTypes.push(_s.humanize(file))
     }
     return fs.statSync(path.resolve(__dirname, '../', file)).isDirectory() ? file : false

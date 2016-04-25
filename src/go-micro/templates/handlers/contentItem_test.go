@@ -57,6 +57,8 @@ func Test(t *testing.T) {
 	TestingT(t)
 }
 
+
+
 type ContractSuite struct {
 }
 
@@ -64,5 +66,5 @@ var _ = Suite(&ContractSuite{})
 
 func (s *ContractSuite) TestContract(c *C) {
 	// TODO garpur 2016-05-20 This needs a rewrite  NOW !
-	// contracttest.TestContracts(s, c, "../contracts/downstream/SomeCustomer/contract.yml", setup, teardown)
+	// contracttest.TestContracts(s, c, "../contracts/downstream/SomeConsumer/contract.yml", setup, teardown)
 }

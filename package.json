@@ -15,7 +15,8 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "babel src -d generators --ignore templates && ./bin/copy",
-    "dev": "supervisor --watch src --no-restart-on exit --exec babel -- --ignore templates --out-dir generators src",
+    "dev": "supervisor --watch src --no-restart-on exit --exec npm -- run build",
+    "comment": "babel -- --ignore templates --out-dir generators src",
     "test": "ava"
   },
   "files": [

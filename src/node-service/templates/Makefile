@@ -37,7 +37,7 @@ test:
 
 build:
 	go get ./...
-	CGO_ENABLED=0 go build -o tmp/micro.static-content
+	CGO_ENABLED=0 go build -o tmp/<%= gitRepo %>
 
 # Container
 docker:

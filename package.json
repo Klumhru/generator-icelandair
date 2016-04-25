@@ -15,7 +15,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "babel src -d generators --ignore templates && ./bin/copy",
-    "dev": "supervisor --watch src --no-restart-on exit --exec npm -- run build",
+    "dev": "supervisor --extensions node,js,json,go,yml,md --watch src --no-restart-on exit --exec npm -- run build",
     "comment": "babel -- --ignore templates --out-dir generators src",
     "test": "ava"
   },
@@ -36,10 +36,11 @@
     "init"
   ],
   "dependencies": {
-    "chalk": "^1.1.3",
     "babel-register": "^6.7.2",
+    "chalk": "^1.1.3",
     "humanize-url": "^1.0.1",
     "normalize-url": "^1.2.0",
+    "rimraf": "^2.5.2",
     "superb": "^1.1.3",
     "underscore.string": "^3.0.3",
     "yeoman-generator": "^0.22.1"

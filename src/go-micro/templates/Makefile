@@ -25,19 +25,20 @@ endif
 
 # Development
 provision:
-	git flow init -d && \
-	git config gitflow.prefix.versiontag "v" && \
+	# git flow init -d && \
+	# git config gitflow.prefix.versiontag "v" && \
 	go get -t -u ./...
 
-test:
-	npm run lint && \
-	npm run test
-
 dev:
-	npm run dev
+	@go get github.com/smartystreets/goconvey
+	@goconvey -port 8081 -watchedSuffixes .go,.json
+
+test:
+	@go test ./...
 
 build:
-	npm run build
+	go get ./...
+	CGO_ENABLED=0 go build -o tmp/<%= gitRepo %>
 
 # Container
 docker:

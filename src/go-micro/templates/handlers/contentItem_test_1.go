@@ -14,7 +14,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Icelandair/micro.static-content/models"
+	"github.com/<%= gitRepo %>/models"
 )
 
 var (
@@ -54,7 +54,7 @@ func teardown() {
 }
 
 func TestBadRequest(t *testing.T) {
-	setup("../contracts/downstream/beta.icelandairlabs.com/bad-request.json")
+	setup("../contracts/downstream/SomeConsumer/error.json")
 	defer teardown()
 
 	// When
@@ -69,24 +69,8 @@ func TestBadRequest(t *testing.T) {
 	assert.EqualValues(t, expected, actual, "JSON: `%s`", content)
 }
 
-func TestDoesNotExist(t *testing.T) {
-	setup("../contracts/downstream/beta.icelandairlabs.com/does-not-exist.json")
-	defer teardown()
-
-	// When
-	db.AutoMigrate(&models.ContentItem{})
-
-	// Then
-	var expected, actual models.Error
-	content, statusCode := MakeRequest(t, &expected, &actual)
-
-	// Should
-	assert.EqualValues(t, expected, actual, "JSON: `%s`", content)
-	assert.EqualValues(t, response.Status, statusCode)
-}
-
 func TestGetData(t *testing.T) {
-	setup("../contracts/downstream/beta.icelandairlabs.com/get-data.json")
+	setup("../contracts/downstream/SomeConsumer/get-data.json")
 	defer teardown()
 
 	// When

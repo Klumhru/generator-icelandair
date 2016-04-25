@@ -9,10 +9,10 @@ import (
 	"testing"
 	"text/template"
 
-	baseHandlers "github.com/IcelandairLabs/micro.base/handlers"
-	baseMiddleware "github.com/IcelandairLabs/micro.base/middleware"
-	"github.com/IcelandairLabs/<%= gitRepo %>/models"
-	"github.com/IcelandairLabs/micro.testing/contracts"
+	baseHandlers "github.com/Icelandair/micro.base/handlers"
+	baseMiddleware "github.com/Icelandair/micro.base/middleware"
+	"github.com/Icelandair/<%= gitRepo %>/models"
+	"github.com/Icelandair/micro.testing/contracts"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 

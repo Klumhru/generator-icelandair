@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Icelandair/micro.static-content/models"
+	"github.com/Icelandair/<%= gitRepo %>/models"
 	"github.com/unrolled/render"
 )
 

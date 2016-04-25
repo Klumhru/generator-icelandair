@@ -1,0 +1,22 @@
+{
+  "/item": {
+    "get": {
+      "request": {
+        "headers": {
+          "Accept": "application/json; charset=utf-8; sub-type=web",
+          "X-Correlation-Id": "ContentCorrelationId"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8",
+          "X-Correlation-Id": "TestCorrelationId; ContentCorrelationId"
+        },
+        "content": {
+          "text": "Some textx"
+        }
+      }
+    }
+  }
+}

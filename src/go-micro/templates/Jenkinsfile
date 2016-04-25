@@ -1,0 +1,27 @@
+node {
+    git branch: 'develop', credentialsId: 'PLACEHOLDER', url: 'https://github.com/Icelandair/<%= gitRepo %>.git'
+    env.WORKSPACE = pwd()
+    def workspace = env.WORKSPACE
+    env.PIPELINE_VERSION = env.BUILD_NUMBER+'-jenkins'
+    def kubeconfig = 'PUT CORRECT PATH HERE e.g./var/lib/jenkins/.kube/CONFIG'
+
+    stage 'Build'
+    withEnv(["GOPATH=$workspace/go"]) {
+       sh '''make docker-build
+          sudo chown jenkins:jenkins tmp/ -R'''
+    }
+
+    stage 'Test'
+    sh 'make docker-test'
+
+    stage 'Container'
+    sh 'test -x entrypoint.sh'
+    sh 'chmod +x entrypoint.sh'
+    sh 'make docker'
+    sh 'make docker-push'
+
+    stage 'Deploy'
+    withEnv(["KUBECONFIG=$kubeconfig"]) {
+        sh 'make rolling-update'
+    }
+}

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/Icelandair/micro.base/middleware"
-	"github.com/Icelandair/<%= gitRepo %>/handlers"
+	"github.com/<%= gitRepo %>/handlers"
 	"github.com/codegangsta/negroni"
 
 	"github.com/tylerb/graceful"

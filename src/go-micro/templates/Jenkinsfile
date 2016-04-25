@@ -1,5 +1,5 @@
 node {
-    git branch: 'develop', credentialsId: 'PLACEHOLDER', url: 'https://github.com/Icelandair/<%= gitRepo %>.git'
+    git branch: 'develop', credentialsId: 'PLACEHOLDER', url: 'https://github.com/<%= gitRepo %>.git'
     env.WORKSPACE = pwd()
     def workspace = env.WORKSPACE
     env.PIPELINE_VERSION = env.BUILD_NUMBER+'-jenkins'

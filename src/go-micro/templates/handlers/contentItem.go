@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Icelandair/<%= gitRepo %>/models"
+	"github.com/<%= gitRepo %>/models"
 	"github.com/unrolled/render"
 )
 
@@ -14,7 +14,7 @@ type ContentItemContext struct {
 
 // NewContentItemContext instance
 func NewContentItemContext() *ContentItemContext {
-	c := Context{}
+	c := ContentItemContext{}
 	c.render = render.New()
 	return &c
 }

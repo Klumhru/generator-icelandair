@@ -23,6 +23,8 @@ _testmain.go
 *.test
 *.prof
 
-# Scaffolding file related 
+<%= type %>.<%= projectName %>
+
+# Scaffolding file related
 node_modules
 *.log

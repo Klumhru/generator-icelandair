@@ -7,7 +7,7 @@ import (
 
 	baseHandlers "github.com/Icelandair/micro.base/handlers"
 	baseMiddleware "github.com/Icelandair/micro.base/middleware"
-	// "github.com/<%= gitRepo %>/models"
+
 	"github.com/Icelandair/micro.testing/contracts"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
@@ -26,7 +26,7 @@ func setup(c *C) *httptest.Server {
 
 	router := mux.NewRouter()
 	router.Methods("GET").Path("/item").HandlerFunc(contentItem.Handle)
-	// router.Methods("GET").Path("/").HandlerFunc(hummm)
+	router.Methods("GET").Path("/error").HandlerFunc(contentItem.Generate500Error)
 
 	health := baseHandlers.NewHealthContext()
 	router.HandleFunc("/health", health.Handle)
@@ -55,6 +55,5 @@ type ContractSuite struct {
 var _ = Suite(&ContractSuite{})
 
 func (s *ContractSuite) TestContract(c *C) {
-	// TODO garpur 2016-05-20 This needs a rewrite  NOW !
-	contracttest.TestContracts(s, c, "../contracts/downstream/SomeConsumer/contract.yml", setup, teardown)
+	contracttest.TestContracts(s, c, "../contracts/downstream", setup, teardown)
 }

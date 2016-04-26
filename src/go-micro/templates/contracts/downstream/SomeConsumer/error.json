@@ -14,8 +14,8 @@
           "X-Correlation-Id": "TestCorrelationId; ContentCorrelationId"
         },
         "content": {
-          "code": -1,
-          "message": "Some eroroororro"
+          "code": 500,
+          "message": "Fake 500 error"
         }
       }
     }

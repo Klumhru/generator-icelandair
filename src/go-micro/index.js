@@ -35,7 +35,6 @@ module.exports = yeoman.Base.extend({
       const tpl = {
         projectName: props.projectName,
         camelProjectName: _s.camelize(props.projectName),
-        humanProjectName: _s(props.projectName).camelize().capitalize(),
         type: props.type,
         tier: props.tier,
         replicaCount: props.replicaCount,

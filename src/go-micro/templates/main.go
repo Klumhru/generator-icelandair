@@ -23,7 +23,7 @@ func main() {
 
 	mux := handlers.NewRouter()
 	n.Use(middleware.NewCorrelationID())
-	n.Use(middleware.NewLogger("<%= humanProjectName %>"))
+	n.Use(middleware.NewLogger("<%= camelProjectName %>"))
 	n.UseHandler(mux)
 
 	host := fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT"))

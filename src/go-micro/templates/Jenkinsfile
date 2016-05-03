@@ -1,9 +1,9 @@
 node {
-    git branch: 'develop', credentialsId: 'PLACEHOLDER', url: 'https://github.com/<%= gitRepo %>.git'
+    checkout scm
     env.WORKSPACE = pwd()
     def workspace = env.WORKSPACE
     env.PIPELINE_VERSION = env.BUILD_NUMBER+'-jenkins'
-    def kubeconfig = 'PUT CORRECT PATH HERE e.g./var/lib/jenkins/.kube/CONFIG'
+    def kubeconfig = 'PUT CORRECT PATH HERE e.g./var/lib/jenkins/.kube/icelandairlabs-eu-west-1c'
 
     stage 'Build'
     withEnv(["GOPATH=$workspace/go"]) {
@@ -13,15 +13,20 @@ node {
 
     stage 'Test'
     sh 'make docker-test'
+    step([$class: 'JUnitResultArchiver', testResults: 'report.xml'])
+    step([$class: 'ArtifactArchiver', artifacts: 'coverage.html', excludes: null])
 
-    stage 'Container'
-    sh 'test -x entrypoint.sh'
-    sh 'chmod +x entrypoint.sh'
-    sh 'make docker'
-    sh 'make docker-push'
+    def branchName = env.BRANCH_NAME
+    if (!branchName.contains('feature')) {
+        stage 'Container'
+        sh 'test -x entrypoint.sh'
+        sh 'chmod +x entrypoint.sh'
+        sh 'make docker'
+        sh 'make docker-push'
 
-    stage 'Deploy'
-    withEnv(["KUBECONFIG=$kubeconfig"]) {
-        sh 'make rolling-update'
+        stage 'Deploy'
+        withEnv(["KUBECONFIG=$kubeconfig"]) {
+          sh 'make rolling-update'
+        }
     }
 }

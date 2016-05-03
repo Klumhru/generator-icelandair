@@ -28,3 +28,16 @@ _testmain.go
 # Scaffolding file related
 node_modules
 *.log
+
+## Test file running make test, make cov or make bench
+report.xml
+coverage.xml
+cover.out
+coverage.html
+
+### JetBrains template
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
+*.iml
+
+## Directory-based project format:
+.idea/

@@ -55,5 +55,5 @@ type ContractSuite struct {
 var _ = Suite(&ContractSuite{})
 
 func (s *ContractSuite) TestContract(c *C) {
-	contracttest.TestContracts(s, c, "../contracts/downstream", setup, teardown)
+	contracts.TestContracts(s, c, "../contracts/downstream", setup, teardown)
 }

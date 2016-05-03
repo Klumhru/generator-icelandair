@@ -18,7 +18,7 @@ spec:
         type: <%= type %>
     spec:
       imagePullSecrets:
-        - name: nectar-registry-pull-secret
+        - name: docker-registry-pull-secret
       containers:
         - name: <%= projectName %>
           env:

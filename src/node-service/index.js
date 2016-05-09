@@ -49,7 +49,7 @@ module.exports = yeoman.Base.extend({
       mv('_gitattributes', '.gitattributes')
       mv('_gitignore', '.gitignore')
       mv('_package.json', 'package.json')
-      mv('service-name.rc.yml', `${tpl.projectName}.rc.yml`)
+      mv('service-name.deployment.yml', `${tpl.projectName}.deployment.yml`)
       mv('service-name.service.yml', `${tpl.projectName}.service.yml`)
 
       cb()

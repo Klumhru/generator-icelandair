@@ -10,34 +10,37 @@ ifndef DOCKER_REGISTRY_HOST
 	DOCKER_REGISTRY_HOST := docker.icelandairlabs.com
 endif
 
-ifndef PIPELINE_VERSION
-	PIPELINE_VERSION := latest
+ifndef IMAGE_TAG
+	IMAGE_TAG := latest
+endif
+
+ifndef BUILDER_IMAGE_TAG
+	BUILDER_IMAGE_TAG := ${IMAGE_TAG}
 endif
 
 ifndef DOCKER_IMAGE
-	DOCKER_IMAGE := ${DOCKER_REGISTRY_HOST}/${DOCKER_USER}/${PROJECT_NAME}:${PIPELINE_VERSION}
+	DOCKER_IMAGE := ${DOCKER_REGISTRY_HOST}/${DOCKER_USER}/${PROJECT_NAME}:${IMAGE_TAG}
 endif
 
 ifndef DOCKER_BUILDER_IMAGE
-	DOCKER_BUILDER_IMAGE := ${DOCKER_REGISTRY_HOST}/${DOCKER_USER}/${PROJECT_NAME}-builder:${PIPELINE_VERSION}
+	DOCKER_BUILDER_IMAGE := ${DOCKER_REGISTRY_HOST}/${DOCKER_USER}/${PROJECT_NAME}-builder:${BUILDER_IMAGE_TAG}
 endif
 
 # Development
 provision:
-	# git flow init -d && \
-	# git config gitflow.prefix.versiontag "v" && \
-	go get -t -u ./...
+	git flow init -d && \
+	git config gitflow.prefix.versiontag "v" && \
+	npm install --loglevel=error --no-progress
 
 dev:
-	@go get github.com/smartystreets/goconvey
-	@goconvey -port 8081 -watchedSuffixes .go,.json
+	npm run dev
 
 test:
-	@go test ./...
+	npm run lint && \
+	npm run test
 
 build:
-	go get ./...
-	CGO_ENABLED=0 go build -o tmp/<%= gitRepo %>
+	npm run build
 
 # Container
 docker:
@@ -48,14 +51,14 @@ docker-push:
 
 docker-build:
 	docker run -v ${HOME}/.ssh:/root/.ssh \
-		-v ${PWD}/app:/usr/src/app \
+		-v ${PWD}:/usr/src/app \
 		-w /usr/src/app \
 		${DOCKER_BUILDER_IMAGE}
 		make build
 
 docker-test:
 	docker run -v ${HOME}/.ssh:/root/.ssh \
-		-v ${PWD}/app:/usr/src/app \
+		-v ${PWD}:/usr/src/app \
 		-w /usr/src/app \
 		${DOCKER_BUILDER_IMAGE}
 		make test
@@ -67,21 +70,30 @@ docker-builder:
 docker-builder-push:
 	docker push ${DOCKER_BUILDER_IMAGE}
 
+docker-builder-pull:
+	docker push ${DOCKER_BUILDER_IMAGE}
+
 docker-builder-shell:
 	docker run -it --rm ${DOCKER_BUILDER_IMAGE} bash
 
 # Kubernetes
-rebuild-controller: clean-controller controller
-rebuild-service: clean-service service
+rebuild-deployment: deployment-clean deployment
+rebuild-service: service-clean service
 
-clean-controller:
-	@kubectl delete -f ${PROJECT_NAME}.rc.yml
+deployment:
+	@cat ${PROJECT_NAME}.deployment.yml | \
+	TPL_DOCKER_IMAGE=${DOCKER_IMAGE} \
+	util/env_replace.py TPL_DOCKER_IMAGE | \
+	kubectl apply -f -
 
-controller:
-	@kubectl create -f ${PROJECT_NAME}.rc.yml
-
-clean-service:
-	@kubectl delete -f ${PROJECT_NAME}.service.yml
+deployment-clean:
+	@cat ${PROJECT_NAME}.deployment.yml | \
+	TPL_DOCKER_IMAGE="" \
+	util/env_replace.py TPL_DOCKER_IMAGE | \
+	kubectl delete -f -
 
 service:
-	@kubectl create -f ${PROJECT_NAME}.service.yml
+	kubectl apply -f ${PROJECT_NAME}.service.yml
+
+service-clean:
+	kubectl delete -f ${PROJECT_NAME}.service.yml

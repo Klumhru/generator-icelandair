@@ -1,0 +1,48 @@
+import java.security.MessageDigest
+
+def generateMD5(String s){
+    MessageDigest.getInstance("MD5").digest(s.bytes).encodeHex().toString()
+}
+
+node {
+    checkout scm
+    def kubeconfig = ''
+    def branchName = env.BRANCH_NAME
+    env.IMAGE_TAG = "${branchName.replace('/','-')}-${env.BUILD_NUMBER}".toString()
+    echo "Using IMAGE_TAG: ${env.IMAGE_TAG}".toString()
+
+    stage 'Builder'
+    String hashString = """
+        ${new File("${pwd()}/package.json".toString()).getText("UTF-8")}
+        ${new File("${pwd()}/Dockerfile.builder".toString()).getText("UTF-8")}
+    """
+    env.BUILDER_IMAGE_TAG = generateMD5(hashString.toString())
+    echo "Using BUILDER_IMAGE_TAG: ${env.BUILDER_IMAGE_TAG}".toString()
+    sh 'make docker-builder-pull || make docker-builder docker-builder-push'
+
+    stage 'Test'
+    sh 'make docker-test'
+
+    stage 'Build'
+    sh 'make docker-build'
+    sh 'make docker'
+    sh 'make docker-push'
+
+    echo "Branch name: ${branchName}".toString()
+    if (branchName.contains('release/')) {
+        kubeconfig = ''
+    } else if (branchName == 'master') {
+        kubeconfig = ''
+    } else if (branchName == 'develop') {
+        kubeconfig = '/var/lib/jenkins/.kube/icelandairlabs-eu-west-1c'
+    }
+
+    if (kubeconfig != '') {
+        stage 'Deploy'
+        withEnv(["KUBECONFIG=$kubeconfig"]) {
+            echo "Using kubeconfig: ${kubeconfig}".toString()
+            sh 'make deployment'
+            sh 'make service'
+        }
+    }
+}

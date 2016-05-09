@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: <%= projectName %>
+spec:
+  replicas: <%= replicaCount %>
+  template:
+    metadata:
+      labels:
+        name: <%= projectName %>
+        tier: <%= tier %>
+        type: <%= type %>
+    spec:
+      imagePullSecrets:
+        - name: docker-registry-pull-secret
+      containers:
+        - name: <%= projectName %>
+          image: TPL_DOCKER_IMAGE

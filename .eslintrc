@@ -1,15 +1,9 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb/base",
+  "extends": "icelandair",
   "rules": {
-    "arrow-body-style": ["off"],
-    "no-confusing-arrow": ["off"],
     "no-console": ["off"],
-    "func-names": ["off"],
-    "no-inline-comments": ["error"],
-    "no-param-reassign": ["off"],
-    "max-len": ["warn", {"code": 120, "tabWidth": 2, "ignoreUrls": true}],
-    "semi": ["error", "never"]
+    "no-param-reassign": ["off"]
   },
   "env": {
     "node": true,

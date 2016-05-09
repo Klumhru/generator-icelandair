@@ -3,7 +3,7 @@ import _s from 'underscore.string'
 import chalk from 'chalk'
 import * as prompts from '../_util/prompts'
 import { coffeeFencing } from '../_util/console'
-import { execSync } from 'child_process'
+// import { execSync } from 'child_process'
 
 module.exports = yeoman.Base.extend({
   prompting() {

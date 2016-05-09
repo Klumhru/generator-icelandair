@@ -34,7 +34,15 @@ dev:
 	@goconvey -port 8081 -watchedSuffixes .go,.json
 
 test:
-	@go test ./...
+	@go get github.com/jstemmer/go-junit-report
+	@go test -v ./... | go-junit-report > report.xml
+
+cov:
+	@go test ./handlers -coverprofile=cover.out
+	@go tool cover -html=cover.out -o coverage.html
+
+bench:
+	@go  test ./... -bench=".*"
 
 build:
 	go get ./...
@@ -59,7 +67,17 @@ docker-test:
 		-v ${PWD}/app:/usr/src/app \
 		-w /usr/src/app \
 		${DOCKER_BUILDER_IMAGE}
-		make test
+		make docker-test-internal
+
+docker-test-internal:
+	# Don't use this on developer machines, it's for internal docker build
+	# It will fuck up your git configuration
+	git config --global url."git@github.com:".insteadOf "https://github.com/"
+	go get -t ./...
+	go get github.com/jstemmer/go-junit-report
+	go test -v ./... | go-junit-report > report.xml
+	go test ./handlers -coverprofile=cover.out
+	go tool cover -html=cover.out -o coverage.html
 
 # Builder container
 docker-builder:

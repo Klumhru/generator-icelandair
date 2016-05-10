@@ -16,9 +16,6 @@
     "lint": "eslint src/*/index.js --fix",
     "test": "ava"
   },
-  "files": [
-    "generators"
-  ],
   "keywords": [
     "yeoman-generator",
     "plugin",

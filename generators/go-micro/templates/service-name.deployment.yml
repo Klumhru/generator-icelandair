@@ -1,5 +1,5 @@
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: <%= projectName %>
   labels:
@@ -7,9 +7,7 @@ metadata:
     tier: <%= tier %>
     type: <%= type %>
 spec:
-  replicas: <%= replicaCount %>
-  selector:
-    name: <%= projectName %>
+  replicas: 2
   template:
     metadata:
       labels:
@@ -21,10 +19,19 @@ spec:
         - name: docker-registry-pull-secret
       containers:
         - name: <%= projectName %>
+          image: TPL_DOCKER_IMAGE
           env:
             - name: PORT
               value: "<%= containerPort %>"
-          image: docker.icelandairlabs.com/icelandairlabs/<%= projectName %>:latest
           ports:
             - containerPort: <%= containerPort %>
               name: <%= type %>
+          volumeMounts:
+            - name: host-certs
+              readOnly: true
+              mountPath: "/etc/ssl/certs"
+      volumes:
+        - name: host-certs
+          hostPath:
+            path: /etc/ssl/certs
+

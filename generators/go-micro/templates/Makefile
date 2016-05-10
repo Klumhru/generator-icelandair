@@ -90,7 +90,20 @@ docker-builder-shell:
 	docker run -it --rm ${DOCKER_BUILDER_IMAGE} bash
 
 # Kubernetes
-rebuild-controller: clean-controller controller
+rebuild-deployment: clean-deployment deployment
+
+clean-deployment:
+	@cat ${COMPONENT}.deployment.yml | \
+	TPL_DOCKER_IMAGE="" \
+	util/env_replace.py TPL_DOCKER_IMAGE | \
+	kubectl delete -f - --ignore-not-found
+
+deployment:
+	@cat ${COMPONENT}.deployment.yml | \
+	TPL_DOCKER_IMAGE=${DOCKER_IMAGE} \
+	util/env_replace.py TPL_DOCKER_IMAGE | \
+	kubectl apply -f -
+
 rebuild-service: clean-service service
 
 clean-controller:

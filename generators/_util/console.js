@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 const chalk = require('chalk')
 
-export const coffee = () => {
+const coffee = () => {
   console.log(`\n       ${chalk.red('( (')}`)
   console.log(`        ${chalk.red(') )')}`)
   console.log(`      ${chalk.bold.red('........')}`)
@@ -10,7 +10,7 @@ export const coffee = () => {
   console.log(`       ${chalk.bold('`----\'')}\n`)
 }
 
-export const fencing = () => {
+const fencing = () => {
   console.log(`\n         ${chalk.bold.blue(' m')}`)
   console.log(`         ${chalk.bold.blue('/')}`)
   console.log(`         ${chalk.bold.blue('\\C')}        ${chalk.bold.red('\\')}`)
@@ -21,7 +21,7 @@ export const fencing = () => {
   console.log(`                         ${chalk.bold.red('-\'')}\n`)
 }
 
-export const coffeeFencing = () => {
+const coffeeFencing = () => {
   console.log(`\n          ${chalk.red('( (')}                 ${chalk.bold.blue(' m')}`)
   console.log(`           ${chalk.red(') )')}                ${chalk.bold.blue('/')}`)
   console.log(`         ${chalk.bold.red('........')}             ${chalk.bold.blue('\\C')}        ${chalk.bold.red('\\')}`)
@@ -32,3 +32,9 @@ export const coffeeFencing = () => {
   console.log(`                                              ${chalk.bold.red('-\'')}\n`)
 }
 /* eslint-enable max-len */
+
+module.exports = {
+  coffee,
+  fencing,
+  coffeeFencing,
+}

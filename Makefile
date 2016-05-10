@@ -51,6 +51,7 @@ docker-test:
 
 docker-build:
 	docker run --rm \
+		-v ${PWD}/generators:/usr/src/generators \
 		-w /usr/src \
 		${DOCKER_IMAGE} \
 		npm run --silent build
@@ -59,6 +60,7 @@ docker-build:
 docker-publish:
 	docker run --rm \
 		-v ${_NPMRC}:/usr/src/.npmrc \
+		-v ${PWD}/generators:/usr/src/generators \
 		-w /usr/src \
 		${DOCKER_IMAGE} \
 		./bin/publish

@@ -5,12 +5,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	baseHandlers "github.com/Icelandair/micro.base/handlers"
 	baseMiddleware "github.com/Icelandair/micro.base/middleware"
 
 	"github.com/Icelandair/micro.testing/contracts"
 	"github.com/codegangsta/negroni"
-	"github.com/gorilla/mux"
 
 	. "gopkg.in/check.v1"
 )
@@ -24,12 +22,7 @@ var (
 func setup(c *C) *httptest.Server {
 	contentItem = NewContentItemContext()
 
-	router := mux.NewRouter()
-	router.Methods("GET").Path("/item").HandlerFunc(contentItem.Handle)
-	router.Methods("GET").Path("/error").HandlerFunc(contentItem.Generate500Error)
-
-	health := baseHandlers.NewHealthContext()
-	router.HandleFunc("/health", health.Handle)
+	router := NewRouter()
 
 	n := negroni.New()
 

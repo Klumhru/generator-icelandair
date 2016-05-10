@@ -1,6 +1,6 @@
 {
   "name": "generator-icelandair",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Scaffold out a new project",
   "license": "ISC",
   "repository": "Icelandair/generator-icelandair",
@@ -16,9 +16,6 @@
     "lint": "eslint src/*/index.js --fix",
     "test": "ava"
   },
-  "files": [
-    "generators"
-  ],
   "keywords": [
     "yeoman-generator",
     "plugin",

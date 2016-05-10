@@ -1,6 +1,6 @@
-import fs from 'fs'
-import path from 'path'
-import _s from 'underscore.string'
+const fs = require('fs')
+const path = require('path')
+const _s = require('underscore.string')
 
 const _defaultType = 'micro'
 const _types = [
@@ -44,7 +44,7 @@ const _parseNameAndType = (name) => {
   return [pName, pType]
 }
 
-export const getDefaults = (gitRepo) => {
+const getDefaults = (gitRepo) => {
   const defaultRepoName = (gitRepo || process.cwd()).split('/').pop()
 
   const [defaultProjectName, defaultType] = _parseNameAndType(defaultRepoName)
@@ -66,4 +66,9 @@ export const getDefaults = (gitRepo) => {
   }
 }
 
-export const defaults = getDefaults()
+const defaults = getDefaults()
+
+module.exports = {
+  getDefaults,
+  defaults,
+}

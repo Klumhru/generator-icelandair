@@ -1,8 +1,8 @@
-import yeoman from 'yeoman-generator'
-import _s from 'underscore.string'
-import chalk from 'chalk'
-import { defaults } from '../_util/defaults'
-import { required } from '../_util/validate'
+const yeoman = require('yeoman-generator')
+const _s = require('underscore.string')
+const chalk = require('chalk')
+const { defaults } = require('../_util/defaults')
+const { required } = require('../_util/validate')
 
 let projectType
 let gitRepo

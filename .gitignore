@@ -1,7 +1,5 @@
 node_modules
 temp
-generators
-!generators/.gitkeep
 *.log
 
 ### JetBrains template

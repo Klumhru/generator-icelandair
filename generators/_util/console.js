@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import chalk from 'chalk'
+const chalk = require('chalk')
 
 export const coffee = () => {
   console.log(`\n       ${chalk.red('( (')}`)

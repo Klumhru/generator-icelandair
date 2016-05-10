@@ -1,5 +1,9 @@
+bin
 .editorconfig
 .eslintrc
 .gitattributes
 .gitignore
+Dockerfile
+Jenkinsfile
+Makefile
 test.js

@@ -14,7 +14,7 @@ const _typeof = (value) => {
 
 const _isEmpty = (value) => {
   if (_typeof(value) === 'object') {
-    for (const key in value) {
+    for (const key of value) {
       if (value.hasOwnProperty(key)) {
         return false
       }
@@ -27,9 +27,9 @@ const _isEmpty = (value) => {
 }
 const _isNumber = (value) => _typeof(value) === 'number'
 
-export const required = (value, msg) => !_isEmpty(value) || msg || 'You have to set a value'
+const required = (value, msg) => !_isEmpty(value) || msg || 'You have to set a value'
 
-export const dns = (value) => {
+const dns = (value) => {
   if (_isEmpty(value)) {
     return 'You have to set a value'
   } else if (value.length > 28) {
@@ -38,11 +38,9 @@ export const dns = (value) => {
   return true
 }
 
-export const number = (value) => {
-  return _isNumber(value) ? true : 'Only numbers allowed'
-}
+const number = (value) => (_isNumber(value) ? true : 'Only numbers allowed')
 
-export const port = (value) => {
+const port = (value) => {
   if (_isEmpty(value)) {
     return 'You have to set a value'
   } else if (!_isNumber(value)) {
@@ -51,4 +49,11 @@ export const port = (value) => {
     return 'Port out of range, valid range 1025 - 65534'
   }
   return true
+}
+
+module.exports = {
+  required,
+  dns,
+  number,
+  port,
 }

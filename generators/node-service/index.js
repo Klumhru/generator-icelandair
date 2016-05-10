@@ -1,8 +1,8 @@
-import yeoman from 'yeoman-generator'
-import _s from 'underscore.string'
-import chalk from 'chalk'
-import * as prompts from '../_util/prompts'
-import { coffeeFencing } from '../_util/console'
+const yeoman = require('yeoman-generator')
+const _s = require('underscore.string')
+const chalk = require('chalk')
+const prompts = require('../_util/prompts')
+const { coffeeFencing } = require('../_util/console')
 
 module.exports = yeoman.Base.extend({
   prompting() {

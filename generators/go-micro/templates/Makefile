@@ -1,9 +1,13 @@
-ifndef PROJECT_NAME
-	PROJECT_NAME := <%= projectName %>
+ifndef COMPONENT
+	COMPONENT := <%= projectName %>
 endif
 
-ifndef DOCKER_USER
-	DOCKER_USER := icelandairlabs
+ifndef PROJECT_NAME
+	PROJECT_NAME := icelandairlabs-com
+endif
+
+ifndef DOMAIN
+	DOMAIN := icelandairlabs.com
 endif
 
 ifndef DOCKER_REGISTRY_HOST
@@ -15,13 +19,8 @@ ifndef PIPELINE_VERSION
 endif
 
 ifndef DOCKER_IMAGE
-	DOCKER_IMAGE := ${DOCKER_REGISTRY_HOST}/${DOCKER_USER}/${PROJECT_NAME}:${PIPELINE_VERSION}
+	DOCKER_IMAGE := ${DOCKER_REGISTRY_HOST}/${PROJECT_NAME}/${COMPONENT}:${PIPELINE_VERSION}
 endif
-
-ifndef DOCKER_BUILDER_IMAGE
-	DOCKER_BUILDER_IMAGE := ${DOCKER_REGISTRY_HOST}/${DOCKER_USER}/${PROJECT_NAME}-builder:${PIPELINE_VERSION}
-endif
-
 
 # Development
 provision:
@@ -46,7 +45,7 @@ bench:
 
 build:
 	go get ./...
-	CGO_ENABLED=0 go build -o tmp/<%= gitRepo %>
+	CGO_ENABLED=0 go build -o tmp/<%= projectName %>
 
 # Container
 docker:
@@ -57,17 +56,23 @@ docker-push:
 
 docker-build:
 	docker run -v ${HOME}/.ssh:/root/.ssh \
-		-v ${PWD}/app:/usr/src/app \
-		-w /usr/src/app \
-		${DOCKER_BUILDER_IMAGE}
-		make build
+		-v ${PWD}:/go/src/github.com/Icelandair/<%= projectName %> \
+		-w /go/src/github.com/Icelandair/<%= projectName %> \
+		golang:1.5 make docker-build-internal
+
+docker-build-internal:
+	# Don't use this on developer machines, it's for internal docker build
+	# It will fuck up your git configuration
+	git config --global url."git@github.com:".insteadOf "https://github.com/"
+	go get ./...
+	CGO_ENABLED=0 go build -o tmp/<%= projectName %>
 
 docker-test:
 	docker run -v ${HOME}/.ssh:/root/.ssh \
-		-v ${PWD}/app:/usr/src/app \
-		-w /usr/src/app \
-		${DOCKER_BUILDER_IMAGE}
-		make docker-test-internal
+		-v ${PWD}:/go/src/github.com/Icelandair/<%= projectName %> \
+		-w /go/src/github.com/Icelandair/<%= projectName %> \
+		golang:1.5 make docker-test-internal
+
 
 docker-test-internal:
 	# Don't use this on developer machines, it's for internal docker build
@@ -78,16 +83,23 @@ docker-test-internal:
 	go test -v ./... | go-junit-report > report.xml
 	go test ./handlers -coverprofile=cover.out
 	go tool cover -html=cover.out -o coverage.html
+	go get github.com/axw/gocov/...
+	go get github.com/AlekSi/gocov-xml
+	gocov test ./... | gocov-xml > coverage.xml
+
 
 # Builder container
 docker-builder:
-	docker build -t ${DOCKER_BUILDER_IMAGE} -f Dockerfile.builder .
+	docker build -t ${DOCKER_IMAGE} -f Dockerfile.builder .
 
 docker-builder-push:
-	docker push ${DOCKER_BUILDER_IMAGE}
+	docker push ${DOCKER_IMAGE}
+
+docker-tag:
+	docker tag ${DOCKER_IMAGE_NO_TAG} ${DOCKER_IMAGE}
 
 docker-builder-shell:
-	docker run -it --rm ${DOCKER_BUILDER_IMAGE} bash
+	docker run -it --rm ${DOCKER_IMAGE} bash
 
 # Kubernetes
 rebuild-deployment: clean-deployment deployment
@@ -106,14 +118,9 @@ deployment:
 
 rebuild-service: clean-service service
 
-clean-controller:
-	@kubectl delete -f ${PROJECT_NAME}.rc.yml
-
-controller:
-	@kubectl create -f ${PROJECT_NAME}.rc.yml
-
 clean-service:
 	@kubectl delete -f ${PROJECT_NAME}.service.yml
 
 service:
-	@kubectl create -f ${PROJECT_NAME}.service.yml
+	@kubectl apply -f ${PROJECT_NAME}.service.yml
+

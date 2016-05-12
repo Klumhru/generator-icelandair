@@ -13,7 +13,7 @@
     "node": ">=6"
   },
   "scripts": {
-    "lint": "eslint src/*/index.js --fix",
+    "lint": "eslint generators/*/index.js --fix",
     "test": "ava"
   },
   "keywords": [

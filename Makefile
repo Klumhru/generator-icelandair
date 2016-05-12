@@ -46,7 +46,7 @@ docker-test:
 	docker run --rm \
 		-w /usr/src \
 		${DOCKER_IMAGE} \
-		npm run --silent test
+		npm run --silent lint && npm run --silent test
 	sudo chown -R ${USER}:${USER} .
 
 docker-publish:

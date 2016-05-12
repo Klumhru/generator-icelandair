@@ -13,6 +13,8 @@
     "node": ">=6"
   },
   "scripts": {
+    "dev": "echo \"No dev script defined\" && exit 0",
+    "build": "echo \"No build script defined\" && exit 0",
     "lint": "eslint generators/*/index.js --fix",
     "test": "ava"
   },

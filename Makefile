@@ -30,6 +30,26 @@ ifndef _NPMRC
 	_NPMRC := ~/.npmrc
 endif
 
+# Development
+provision:
+	git flow init -d && \
+	git config gitflow.prefix.versiontag "v" && \
+	npm install --loglevel=error --no-progress
+
+dev:
+	npm run dev
+
+test:
+	npm run lint && \
+	npm run test
+
+build:
+	npm run build
+
+publish:
+	./bin/publish
+
+# Container
 docker:
 	docker build -t ${DOCKER_IMAGE} .
 
@@ -46,7 +66,7 @@ docker-test:
 	docker run --rm \
 		-w /usr/src \
 		${DOCKER_IMAGE} \
-		npm run --silent lint && npm run --silent test
+		make test
 	sudo chown -R ${USER}:${USER} .
 
 docker-publish:
@@ -55,5 +75,5 @@ docker-publish:
 		-v ${PWD}/generators:/usr/src/generators \
 		-w /usr/src \
 		${DOCKER_IMAGE} \
-		./bin/publish
+		make publish
 	sudo chown -R ${USER}:${USER} .

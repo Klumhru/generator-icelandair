@@ -8,8 +8,8 @@
     "no-param-reassign": ["off"]
   },
   "env": {
+    "browser": false,
     "node": true,
-    "mocha": true,
     "es6": true
   }
 }

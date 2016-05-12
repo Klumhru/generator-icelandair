@@ -2,6 +2,13 @@ const _s = require('underscore.string')
 const { defaults, getDefaults } = require('./defaults')
 const validate = require('./validate')
 
+const confirm = (name = 'confirm', message = 'Message missing!', defaultValue = false) => ({
+  name,
+  message,
+  defaultValue: !!defaultValue,
+  type: 'confirm',
+})
+
 const projectName = (gitRepo) => ({
   name: 'projectName',
   message: 'What do you want to name your project?',
@@ -48,6 +55,7 @@ const projectDescription = {
 }
 
 module.exports = {
+  confirm,
   projectName,
   type,
   tier,

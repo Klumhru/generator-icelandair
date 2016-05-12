@@ -1,0 +1,16 @@
+{
+  "parser": "babel-eslint",
+  "extends": "icelandair",
+  "rules": {
+    "no-unsafe-finally": ["off"],
+    "no-useless-computed-key": ["off"],
+    "no-console": ["off"],
+    "no-underscore-dangle": ["off"],
+    "no-param-reassign": ["off"]
+  },
+  "env": {
+    "browser": false,
+    "node": true,
+    "es6": true
+  }
+}

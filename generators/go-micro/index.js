@@ -45,7 +45,7 @@ module.exports = yeoman.Base.extend({
         gitRepo: this.options.gitRepo,
       }
 
-      const mv = (from, to) => {
+      const rename = (from, to) => {
         this.fs.move(this.destinationPath(from), this.destinationPath(to))
       }
 
@@ -53,12 +53,15 @@ module.exports = yeoman.Base.extend({
         `${this.templatePath()}/**`,
       ], this.destinationPath(), tpl)
 
-      mv('_editorconfig', '.editorconfig')
-      mv('_gitattributes', '.gitattributes')
-      mv('_gitignore', '.gitignore')
-      mv('_dockerignore', '.dockerignore')
-      mv('service-name.deployment.yml', `micro.${tpl.projectName}.deployment.yml`)
-      mv('service-name.service.yml', `micro.${tpl.projectName}.service.yml`)
+      rename('_editorconfig', '.editorconfig')
+      rename('_gitattributes', '.gitattributes')
+      rename('_gitignore', '.gitignore')
+      rename('_dockerignore', '.dockerignore')
+      rename('service-name.deployment.yml', `micro.${tpl.projectName}.deployment.yml`)
+      rename('service-name.service.yml', `micro.${tpl.projectName}.service.yml`)
+      rename('_Dockerfile', 'Dockerfile')
+      rename('_Jenkinsfile', 'Jenkinsfile')
+      rename('_Makefile', 'Makefile')
 
       cb()
     })

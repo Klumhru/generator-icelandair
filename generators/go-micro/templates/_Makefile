@@ -49,14 +49,6 @@ build:
 	go get ./...
 	CGO_ENABLED=0 go build -o tmp/<%= projectName %>
 
-swagger-server:
-	@go get -u github.com/go-swagger/go-swagger/cmd/swagger
-	@swagger generate server -A ${COMPONENT} -f /contracts/downstream/SomeConsumer/contract.yml
-
-swagger-client:
-	@go get -u github.com/go-swagger/go-swagger/cmd/swagger
-	@swagger generate client -A Producer -f ./contracts/upstream/SomeProducer/contract.yml
-
 # Container
 docker:
 	docker build -t ${DOCKER_IMAGE} .

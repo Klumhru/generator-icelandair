@@ -1,12 +1,8 @@
-FROM node:5
+FROM alpine
 
-COPY /dist /app
-COPY /package.json /
+COPY /tmp/micro.user /bin/<%= projectName %>
+COPY /entrypoint.sh /entrypoint.sh
 
-WORKDIR /
+RUN chmod +x /entrypoint.sh /bin/<%= projectName %>
 
-RUN npm install --production --silent --no-progress
-
-ENV NODE_ENV production
-
-ENTRYPOINT ["node", "./app"]
+ENTRYPOINT ["/entrypoint.sh"]

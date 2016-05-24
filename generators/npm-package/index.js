@@ -3,7 +3,8 @@ const _s = require('underscore.string')
 const chalk = require('chalk')
 const prompts = require('../_util/prompts')
 const { coffeeFencing } = require('../_util/console')
-// const { execSync } = require('child_process')
+
+let tpl
 
 module.exports = yeoman.Base.extend({
   prompting() {
@@ -14,35 +15,20 @@ module.exports = yeoman.Base.extend({
       return
     }
 
-    // const pathToGo = execSync('which go')
-    // const go = pathToGo && pathToGo.toString().length > 3
-    //
-    // if (!go) {
-    //   console.log(chalk.bold.red('You must have go https://golang.org/ installed locally to develop go micro services.'))
-    //   return
-    // }
-
     const promptArr = []
 
     promptArr.push(prompts.projectName(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.type(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.tier)
-    promptArr.push(prompts.replicaCount)
-    promptArr.push(prompts.containerPort)
     promptArr.push(prompts.projectDescription)
+    promptArr.push(prompts.confirm('cli', 'Do you need a cli?', false))
 
     this.prompt(promptArr, (props) => {
-      const tpl = {
+      tpl = {
         projectName: props.projectName,
         camelProjectName: _s.camelize(props.projectName),
-        type: props.type,
-        tier: props.tier,
-        replicaCount: props.replicaCount,
-        containerPort: props.containerPort,
         projectDescription: props.projectDescription,
         name: this.user.git.name(),
         email: this.user.git.email(),
-        gitRepo: this.options.gitRepo,
+        cli: props.cli,
       }
 
       const mv = (from, to) => {
@@ -51,14 +37,19 @@ module.exports = yeoman.Base.extend({
 
       this.fs.copyTpl([
         `${this.templatePath()}/**`,
+        '!**/cli.js',
       ], this.destinationPath(), tpl)
 
+      if (props.cli) {
+        this.fs.copyTpl(this.templatePath('cli.js'), this.destinationPath('cli.js'), tpl)
+      }
+
+      mv('_babelrc', '.babelrc')
       mv('_editorconfig', '.editorconfig')
+      mv('_eslintrc', '.eslintrc')
       mv('_gitattributes', '.gitattributes')
       mv('_gitignore', '.gitignore')
-      mv('_dockerignore', '.dockerignore')
-      mv('service-name.deployment.yml', `micro.${tpl.projectName}.deployment.yml`)
-      mv('service-name.service.yml', `micro.${tpl.projectName}.service.yml`)
+      mv('_package.json', 'package.json')
 
       cb()
     })
@@ -67,5 +58,25 @@ module.exports = yeoman.Base.extend({
     console.log(chalk.blue.bold('Installing dependencies.'))
     console.log(chalk.cyan.bold('This might take a while – maybe go for some coffee, or duel?'))
     coffeeFencing()
+
+    if (tpl.cli) {
+      this.npmInstall([
+        'meow',
+      ], { save: true, stdio: 'ignore' })
+    }
+    this.npmInstall([
+      'ava',
+      'babel-cli',
+      'babel-eslint',
+      'babel-plugin-add-module-exports',
+      'babel-plugin-syntax-async-functions',
+      'babel-plugin-transform-regenerator',
+      'babel-preset-es2015-node6',
+      'babel-register',
+      'eslint',
+      'eslint-config-icelandair',
+      'eslint-plugin-import',
+      'nyc',
+    ], { saveDev: true, stdio: 'ignore' })
   },
 })

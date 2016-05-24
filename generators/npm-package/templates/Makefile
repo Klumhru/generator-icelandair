@@ -1,5 +1,5 @@
 ifndef PROJECT_NAME
-	PROJECT_NAME := generator-icelandair
+	PROJECT_NAME := <%= projectName %>
 endif
 
 ifndef DOCKER_USER
@@ -67,6 +67,13 @@ docker-test:
 		-w /usr/src \
 		${DOCKER_IMAGE} \
 		make test
+	sudo chown -R ${USER}:${USER} .
+
+docker-build:
+	docker run --rm \
+		-w /usr/src \
+		${DOCKER_IMAGE} \
+		make build
 	sudo chown -R ${USER}:${USER} .
 
 docker-publish:

@@ -1,0 +1,6 @@
+*
+!entrypoint.sh
+!tmp/
+!tmp/*
+!certs/
+!certs/*

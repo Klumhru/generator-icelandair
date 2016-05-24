@@ -1,6 +1,6 @@
 {
   "name": "generator-icelandair",
-  "version": "0.3.2",
+  "version": "0.4.1",
   "description": "Scaffold out a new project",
   "license": "ISC",
   "repository": "Icelandair/generator-icelandair",
@@ -13,7 +13,9 @@
     "node": ">=6"
   },
   "scripts": {
-    "lint": "eslint src/*/index.js --fix",
+    "dev": "echo \"No dev script defined\" && exit 0",
+    "build": "echo \"No build script defined\" && exit 0",
+    "lint": "eslint generators/*/index.js --fix",
     "test": "ava"
   },
   "keywords": [

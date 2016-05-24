@@ -1,0 +1,46 @@
+{
+  "name": "<%= projectName %>",
+  "version": "0.0.0",
+  "description": "<%= projectDescription %>",
+  "license": "UNLICENSED",
+  "repository": "Icelandair/<%= projectName %>",
+  "author": {
+    "name": "<%= name %>",
+    "email": "<%= email %>"
+  },<% if (cli) { %>
+  "bin": "cli.js",<% } %>
+  "engines": {
+    "node": ">=6"
+  },
+  "scripts": {
+    "dev": "echo \"No dev script defined\" && exit 0",
+    "build": "echo \"No build script defined\" && exit 0",
+    "lint": "eslint . --fix",
+    "test": "nyc ava"
+  },
+  "keywords": [
+    ""
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ],
+    "source": [
+      "src/**/*.js"
+    ],
+    "failFast": true,
+    "verbose": true,
+    "require": [],
+    "babel": {
+      "presets": [
+        "es2015-node6"
+      ],
+      "plugins": [
+        "add-module-exports"
+      ],
+      "sourceMaps": "inline"
+    }
+  }
+}

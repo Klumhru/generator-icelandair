@@ -57,9 +57,6 @@ module.exports = yeoman.Base.extend({
       mv('_gitattributes', '.gitattributes')
       mv('_gitignore', '.gitignore')
       mv('_dockerignore', '.dockerignore')
-      mv('Dockerfile', 'Dockerfile')
-      mv('Jenkinsfile', 'Jenkinsfile')
-      mv('Makefile', 'Makefile')
       mv('service-name.deployment.yml', `micro.${tpl.projectName}.deployment.yml`)
       mv('service-name.service.yml', `micro.${tpl.projectName}.service.yml`)
 

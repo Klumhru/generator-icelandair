@@ -1,0 +1,53 @@
+swagger: "2.0"
+info:
+  version: 0.0.0
+  title: producer
+host: icelandairlabs.com
+basePath: /
+schemes:
+  - https
+produces:
+  - application/json; charset=utf-8
+paths:
+  /item:
+    get:
+      summary: Get hardcoded dummy content
+      operationId: getDummyContent
+      parameters:
+        - name: Accept
+          in: header
+          required: true
+          type: string
+        - name: "X-Correlation-Id"
+          in: header
+          required: true
+          type: string
+      responses:
+        200:
+          headers:
+            X-Correlation-Id:
+              description: Correlation ID
+              type: string
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/ContentItem'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  ContentItem:
+    required:
+      - text
+    properties:
+      text:
+        type: string
+  Error:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+      message:
+        type: string

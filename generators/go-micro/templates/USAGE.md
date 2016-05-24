@@ -13,7 +13,7 @@ ENV_NAME=value
 
 
 ## Secrets
-See [replication controller](<%= projectName %>.rc.yml)
+See [replication controller](<%= projectName %>.deployment.yml)
 
 
 ## Usage examples

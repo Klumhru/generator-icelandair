@@ -1,6 +1,7 @@
 const yeoman = require('yeoman-generator')
 const _s = require('underscore.string')
 const chalk = require('chalk')
+const gitInit = require('../_util/git')
 const { defaults } = require('../_util/defaults')
 const { required } = require('../_util/validate')
 
@@ -46,25 +47,8 @@ module.exports = yeoman.Base.extend({
         chalk.bold.cyan('Successfully generated new ') +
         chalk.bold.green(_s.humanize(projectType).toLowerCase())
       )
-      if (!gitRepo) {
-        console.log(
-          chalk.bold.red('Wont initialize git since no gitRepo was provided')
-        )
-        return
-      }
-      this.spawnCommandSync('git', ['init'], { stdio: 'ignore' })
-      this.spawnCommandSync('git', ['flow', 'init', '-d'], { stdio: 'ignore' })
-      this.spawnCommandSync('git', ['config', 'gitflow.prefix.versiontag', 'v'], { stdio: 'ignore' })
-      this.spawnCommandSync('git', ['remote', 'add', 'origin', `git@github.com:${gitRepo}.git`], { stdio: 'ignore' })
-      this.spawnCommandSync('git', ['add', '-A'], { stdio: 'ignore' })
-      this.spawnCommandSync('git', ['commit', '-m', `Generated new ${projectType}`], { stdio: 'ignore' })
 
-      console.log(
-        chalk.bold.cyan('Initialized git repository with flow config & commited generated code\n') +
-        chalk.bold.cyan('Make sure to a create repository with the name ') +
-        chalk.bold.green(gitRepo) +
-        chalk.bold.cyan(' on GitHub before pushing.')
-      )
+      gitInit({ gitRepo }, this.spawnCommandSync)
     })
   },
 })

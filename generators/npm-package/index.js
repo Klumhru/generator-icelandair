@@ -18,7 +18,7 @@ module.exports = yeoman.Base.extend({
     const promptArr = []
 
     promptArr.push(prompts.projectName(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.projectDescription)
+    promptArr.push(prompts.projectDescription())
     promptArr.push(prompts.confirm('cli', 'Do you need a cli?', false))
 
     this.prompt(promptArr, (props) => {

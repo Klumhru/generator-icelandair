@@ -17,10 +17,10 @@ module.exports = yeoman.Base.extend({
 
     promptArr.push(prompts.projectName(this.options.gitRepo.split('/').pop()))
     promptArr.push(prompts.type(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.tier)
-    promptArr.push(prompts.replicaCount)
-    promptArr.push(prompts.containerPort)
-    promptArr.push(prompts.projectDescription)
+    promptArr.push(prompts.tier())
+    promptArr.push(prompts.replicaCount())
+    promptArr.push(prompts.containerPort())
+    promptArr.push(prompts.projectDescription())
 
     this.prompt(promptArr, (props) => {
       const tpl = {
@@ -35,7 +35,7 @@ module.exports = yeoman.Base.extend({
         email: this.user.git.email(),
       }
 
-      const mv = (from, to) => {
+      const rename = (from, to) => {
         this.fs.move(this.destinationPath(from), this.destinationPath(to))
       }
 
@@ -43,14 +43,14 @@ module.exports = yeoman.Base.extend({
         `${this.templatePath()}/**`,
       ], this.destinationPath(), tpl)
 
-      mv('_babelrc', '.babelrc')
-      mv('_editorconfig', '.editorconfig')
-      mv('_eslintrc', '.eslintrc')
-      mv('_gitattributes', '.gitattributes')
-      mv('_gitignore', '.gitignore')
-      mv('_package.json', 'package.json')
-      mv('service-name.deployment.yml', `${tpl.projectName}.deployment.yml`)
-      mv('service-name.service.yml', `${tpl.projectName}.service.yml`)
+      rename('_babelrc', '.babelrc')
+      rename('_editorconfig', '.editorconfig')
+      rename('_eslintrc', '.eslintrc')
+      rename('_gitattributes', '.gitattributes')
+      rename('_gitignore', '.gitignore')
+      rename('_package.json', 'package.json')
+      rename('service-name.deployment.yml', `${tpl.projectName}.deployment.yml`)
+      rename('service-name.service.yml', `${tpl.projectName}.service.yml`)
 
       cb()
     })

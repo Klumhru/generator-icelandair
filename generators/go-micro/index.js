@@ -26,10 +26,10 @@ module.exports = yeoman.Base.extend({
 
     promptArr.push(prompts.projectName(this.options.gitRepo.split('/').pop()))
     promptArr.push(prompts.type(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.tier)
-    promptArr.push(prompts.replicaCount)
-    promptArr.push(prompts.containerPort)
-    promptArr.push(prompts.projectDescription)
+    promptArr.push(prompts.tier())
+    promptArr.push(prompts.replicaCount())
+    promptArr.push(prompts.containerPort())
+    promptArr.push(prompts.projectDescription())
 
     this.prompt(promptArr, (props) => {
       const tpl = {

@@ -21,7 +21,7 @@ func main() {
 	n := negroni.Classic()
 	log.Printf("Initializing service")
 
-	mux := handlers.NewRouter()
+	mux := handlers.NewRouter("some url to an actual service")
 	n.Use(middleware.NewCorrelationID())
 	n.Use(middleware.NewLogger("<%= camelProjectName %>"))
 	n.UseHandler(mux)

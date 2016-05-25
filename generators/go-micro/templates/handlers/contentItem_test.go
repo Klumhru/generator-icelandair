@@ -8,21 +8,26 @@ import (
 	baseMiddleware "github.com/Icelandair/micro.base/middleware"
 
 	"github.com/Icelandair/micro.testing/contracts"
+	"github.com/Icelandair/micro.testing/mocker"
 	"github.com/codegangsta/negroni"
 
 	. "gopkg.in/check.v1"
 )
 
 var (
-	contentItem *ContentItemContext
-	server      *httptest.Server
-	reader      io.Reader
+	contentItem      *ContentItemContext
+	server           *httptest.Server
+	reader           io.Reader
+	upstreamProvider *httptest.Server
 )
 
 func setup(c *C) *httptest.Server {
-	contentItem = NewContentItemContext()
 
-	router := NewRouter()
+	upstreamProvider = mocker.MockContracts("../contracts/upstream")
+
+	contentItem = NewContentItemContext(upstreamProvider.URL)
+
+	router := NewRouter(upstreamProvider.URL + "/api/v1/provider")
 
 	n := negroni.New()
 
@@ -35,6 +40,7 @@ func setup(c *C) *httptest.Server {
 }
 
 func teardown() {
+	upstreamProvider.Close()
 	server.Close()
 }
 

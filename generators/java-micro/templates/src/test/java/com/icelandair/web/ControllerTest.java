@@ -1,4 +1,4 @@
-package com.icelandair.web
+package com.icelandair.web;
 
 
 import com.icelandair.Application;

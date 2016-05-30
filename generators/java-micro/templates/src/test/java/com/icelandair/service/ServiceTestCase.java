@@ -1,4 +1,4 @@
-package com.icelandair.service
+package com.icelandair.service;
 
 import com.icelandair.domain.Model;
 import com.icelandair.service.implementation.ServiceImpl;

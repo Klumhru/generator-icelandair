@@ -12,6 +12,7 @@ public class ServiceImpl implements IService {
 
   public Model getHello(){
     Model model = new Model();
+    // remember to add timer to request eg. to webmethods
     model.setWelcome("Hello");
     return model;
   }

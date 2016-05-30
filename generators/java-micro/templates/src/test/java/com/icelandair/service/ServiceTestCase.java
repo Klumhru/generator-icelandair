@@ -1,35 +1,22 @@
 package com.icelandair.service
 
+import com.icelandair.domain.Model;
+import com.icelandair.service.implementation.ServiceImpl;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
 
 /**
- * 
+ *
  */
-
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceTestCase {
 
-  //@InjectMocks
-  @Autowired
-  <%= projectName %>Service service;
+  IService service = new ServiceImpl();
 
   @Before
   public void setUp() {
@@ -39,8 +26,8 @@ public class ServiceTestCase {
 
   @Test
   public void isHelloOK(){
-    String welcome = service.isHelloOK();
-    assertTrue("Should be ok", "Hello".equalsIgnoreCase(welcome));
+    Model welcome = service.getHello();
+    assertTrue("Should be ok", "Hello".equalsIgnoreCase(welcome.getWelcome()));
   }
 
 }

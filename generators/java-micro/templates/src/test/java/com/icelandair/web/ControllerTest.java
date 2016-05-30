@@ -1,80 +1,73 @@
 package com.icelandair.web
 
-import org.junit.Before;
-import org.junit.Ignore;
+
+import com.icelandair.Application;
+import com.icelandair.domain.Model;
+import com.icelandair.service.implementation.ServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
-
-import static com.icelandair.domain.Model;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  *
  */
-
 @RunWith(MockitoJUnitRunner.class)
+@SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
 public class ControllerTest {
 
   @Mock
-  Serive service
+  ServiceImpl service;
 
   @InjectMocks
-  @Autowired
-  <%= projectName %>Controller controller;
+  Controller controller;
 
-  @Autowired
-  AnnotationMethodHandlerAdapter handlerAdapter;
-
-  private MockRenderRequest renderRequest;
-  private MockRenderResponse renderResponse;
-  private PortletPreferences portletPreferences;
-  private MockActionRequest actionRequest;
-  private MockActionResponse actionResponse;
-  private PortletSession portletSession;
-  private Model model;
-
-  @Before
-  public void setUp() {
-    renderRequest = new MockRenderRequest();
-    renderResponse = new MockRenderResponse();
-    portletPreferences = new MockPortletPreferences();
-    actionRequest = new MockActionRequest();
-    actionResponse = new MockActionResponse();
-    portletSession = new MockPortletSession();
-    portletPreferences = actionRequest.getPreferences();
-    actionRequest.setSession(portletSession);
-    renderRequest.setSession(portletSession);
-    model = new BindingAwareModelMap();
-    MockitoAnnotations.initMocks(this);
-  }
-
-
-  @Test
-  public void isHelloOK(){
-    when(service.isHello()).thenReturn("Hello");
-    String welcome = controller.isHello();
-    assertTrue("Should be ok", "Hello".equalsIgnoreCase(welcome));
+  @Bean
+  public MockMvc controlMock() {
+    return MockMvcBuilders.standaloneSetup(this.controller).build();
   }
 
   @Test
-  public void notHello(){
-    when(service.isHello()).thenReturn("By");
-    String welcome = controller.isHello();
-    assertFalse("Should not be ok", "Hello".equalsIgnoreCase(welcome));
+  public void isHelloOK() throws Exception {
+    Model model = new Model();
+    model.setWelcome("Hello");
+    when(service.getHello()).thenReturn(model);
+    controlMock()
+      .perform(
+        get("/hello")
+      )
+      .andExpect(
+        status().isOk()
+      )
+      .andExpect(
+        content().string("{\"welcome\":\"Hello\"}")
+      );
+  }
+
+  @Test
+  public void notHello() throws Exception {
+    Model model = new Model();
+    model.setWelcome("By");
+    when(service.getHello()).thenReturn(model);
+    controlMock()
+      .perform(
+        get("/")
+      )
+      .andExpect(
+        status().isNotFound()
+      );
   }
 
 }

@@ -1,0 +1,36 @@
+node {
+    // Mark the code checkout 'stage'....
+    stage 'Checkout'
+    // Checkout code from repository
+    checkout scm
+    def kubeconfig = 'PUT CORRECT PATH HERE e.g./var/lib/jenkins/.kube/icelandairlabs-eu-west-1c' or '/var/lib/jenkins/.kube/icecluster-west-1a'
+
+    env.WORKSPACE = pwd()
+    def workspace = env.WORKSPACE
+    env.PIPELINE_VERSION = env.BUILD_NUMBER+'-jenkins'
+    
+
+    // Mark the code build 'stage'....
+    stage 'Build maven'
+    sh 'make docker-build'
+
+
+    stage 'Test'
+    sh 'make docker-test'
+    step([$class: 'JUnitResultArchiver', testResults: 'report.xml'])
+    step([$class: 'ArtifactArchiver', artifacts: 'coverage.html', excludes: null])
+
+    def branchName = env.BRANCH_NAME
+    if (!branchName.contains('feature')) {
+        stage 'Container'
+        sh 'test -x entrypoint.sh'
+        sh 'chmod +x entrypoint.sh'
+        sh 'make docker'
+        sh 'make docker-push'
+
+        stage 'Deploy'
+        withEnv(["KUBECONFIG=$kubeconfig"]) {
+          sh 'make deployment service'
+        }
+    }
+}

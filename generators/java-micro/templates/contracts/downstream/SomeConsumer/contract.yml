@@ -1,0 +1,43 @@
+swagger: '2.0'
+info:
+  title: Icelandair Profile API
+  description: Icelandair Profile API description
+  version: "1.0.0"
+# the domain of the service
+host: icelandair.is
+# array of all schemes that your API supports
+schemes:
+  - http
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+# will be prefixed to all paths
+basePath: /
+paths:
+  /hello:
+    get:
+      responses:
+        200:
+          description: Model response
+          schema:
+            $ref: '#/definitions/Model'
+        201:
+          description: success
+        401:
+          description: unautherized
+        403:
+          description: forbidden
+        404:
+          description: not found
+
+
+definitions:
+  Model:
+    type: object
+    properties:
+      welcome:
+        type: string
+        description: Welcome string

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping(value = {"/"})
+@RequestMapping(value = {"/api", "/api/v1"})
 public class Controller {
 
   @Autowired

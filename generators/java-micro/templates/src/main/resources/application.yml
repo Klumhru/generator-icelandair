@@ -1,0 +1,7 @@
+# tomcat
+server:
+  port: 10000
+# disable security
+security:
+  basic:
+    enabled: false

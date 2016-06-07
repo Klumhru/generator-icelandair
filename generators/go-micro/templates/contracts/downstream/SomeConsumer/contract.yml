@@ -9,6 +9,19 @@ schemes:
 produces:
   - application/json; charset=utf-8
 paths:
+  /health:
+    get:
+      summary: Simple health check of resource
+      operationId: getHealthCheck
+      responses:
+        200:
+          description: Health of resource
+          schema:
+            $ref: '#/definitions/Health'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /item:
     get:
       summary: Get hardcoded dummy content

@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: <%= projectName %>
+  labels:
+    name: <%= projectName %>
+    tier: <%= tier %>
+    type: <%= type %>
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: <%= projectName %>
+        tier: <%= tier %>
+        type: <%= type %>
+    spec:
+      imagePullSecrets:
+        - name: docker-registry-pull-secret
+      containers:
+        - name: <%= projectName %>
+          image: TPL_DOCKER_IMAGE
+          volumeMounts:
+            - name: host-certs
+              readOnly: true
+              mountPath: "/etc/ssl/certs"
+      volumes:
+        - name: host-certs
+          hostPath:
+            path: /etc/ssl/certs
+

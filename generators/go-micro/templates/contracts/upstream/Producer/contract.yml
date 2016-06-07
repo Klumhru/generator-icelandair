@@ -1,27 +1,14 @@
 swagger: "2.0"
 info:
   version: 0.0.0
-  title: <%= camelProjectName %>
+  title: producer
 host: icelandairlabs.com
-basePath: /
+basePath: /api/v1/provider
 schemes:
   - https
 produces:
   - application/json; charset=utf-8
 paths:
-  /health:
-    get:
-      summary: Simple health check of resource
-      operationId: getHealthCheck
-      responses:
-        200:
-          description: Health of resource
-          schema:
-            $ref: '#/definitions/Health'
-        default:
-          description: unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   /item:
     get:
       summary: Get hardcoded dummy content

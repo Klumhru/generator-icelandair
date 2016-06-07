@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: <%= projectName %>
+  labels:
+    name: <%= projectName %>
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: <%= containerPort %>
+  selector:
+    name: <%= projectName %>
+    tier: <%= tier %>
+    type: <%= type %>

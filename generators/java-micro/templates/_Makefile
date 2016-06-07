@@ -24,14 +24,16 @@ endif
 
 # Development
 provision:
-	@go get -t ./...
+	# git flow init -d && \
+	# git config gitflow.prefix.versiontag "v" && \
+	go get -t -u ./...
 
 dev:
 	@go get github.com/smartystreets/goconvey
 	@goconvey -port 8081 -watchedSuffixes .go,.json
 
 test:
-	#go get -u github.com/go-swagger/go-swagger/cmd/swagger
+	@go get -u github.com/go-swagger/go-swagger/cmd/swagger
 	@swagger validate ./contracts/downstream/SomeConsumer/contract.yml
 	@go get github.com/jstemmer/go-junit-report
 	@go test -v ./... | go-junit-report > report.xml
@@ -123,3 +125,4 @@ clean-service:
 
 service:
 	@kubectl apply -f ${PROJECT_NAME}.service.yml
+

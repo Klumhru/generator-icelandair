@@ -1,0 +1,17 @@
+{
+  "/health": {
+    "get": {
+      "request": {
+        "method": "GET",
+        "url": "/health"
+      },
+      "response": {
+        "status": 200,
+        "content": {
+          "status": "OK",
+          "message": ""
+        }
+      }
+    }
+  }
+}

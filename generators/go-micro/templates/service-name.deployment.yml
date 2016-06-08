@@ -30,8 +30,14 @@ spec:
             - name: host-certs
               readOnly: true
               mountPath: "/etc/ssl/certs"
+            - name: <%= projectName %>-conf-aws
+              readOnly: true
+              mountPath: "/etc/<%= projectName %>/aws"
       volumes:
         - name: host-certs
           hostPath:
             path: /etc/ssl/certs
+        - name: <%= projectName %>-conf-aws
+          secret:
+            secretName: aws-credentials-icecms
 

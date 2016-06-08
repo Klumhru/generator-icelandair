@@ -56,8 +56,8 @@ docker-push:
 
 docker-build:
 	docker run -v ${HOME}/.ssh:/root/.ssh \
-		-v ${PWD}:/go/src/github.com/Icelandair/<%= projectName %> \
-		-w /go/src/github.com/Icelandair/<%= projectName %> \
+		-v ${PWD}:/go/src/github.com/Icelandair/micro.<%= projectName %> \
+		-w /go/src/github.com/Icelandair/micro.<%= projectName %> \
 		golang:1.5 make docker-build-internal
 
 docker-build-internal:
@@ -69,8 +69,8 @@ docker-build-internal:
 
 docker-test:
 	docker run -v ${HOME}/.ssh:/root/.ssh \
-		-v ${PWD}:/go/src/github.com/Icelandair/<%= projectName %> \
-		-w /go/src/github.com/Icelandair/<%= projectName %> \
+		-v ${PWD}:/go/src/github.com/Icelandair/micro.<%= projectName %> \
+		-w /go/src/github.com/Icelandair/micro.<%= projectName %> \
 		golang:1.5 make docker-test-internal
 
 
@@ -105,13 +105,13 @@ docker-builder-shell:
 rebuild-deployment: clean-deployment deployment
 
 clean-deployment:
-	@cat ${COMPONENT}.deployment.yml | \
+	@cat micro.<%= projectName %>.deployment.yml | \
 	TPL_DOCKER_IMAGE="" \
 	util/env_replace.py TPL_DOCKER_IMAGE | \
 	kubectl delete -f - --ignore-not-found
 
 deployment:
-	@cat ${COMPONENT}.deployment.yml | \
+	@cat micro.<%= projectName %>.deployment.yml | \
 	TPL_DOCKER_IMAGE=${DOCKER_IMAGE} \
 	util/env_replace.py TPL_DOCKER_IMAGE | \
 	kubectl apply -f -
@@ -119,7 +119,7 @@ deployment:
 rebuild-service: clean-service service
 
 clean-service:
-	@kubectl delete -f ${PROJECT_NAME}.service.yml
+	@kubectl delete -f micro.<%= projectName %>.service.yml
 
 service:
-	@kubectl apply -f ${PROJECT_NAME}.service.yml
+	@kubectl apply -f micro.<%= projectName %>.service.yml

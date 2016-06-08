@@ -17,7 +17,7 @@ node {
     step([$class: 'ArtifactArchiver', artifacts: 'coverage.html', excludes: null])
 
     def branchName = env.BRANCH_NAME
-    if (!branchName.contains('feature')) {
+    if (branchName.contains('develop')) {
         stage 'Container'
         sh 'test -x entrypoint.sh'
         sh 'chmod +x entrypoint.sh'

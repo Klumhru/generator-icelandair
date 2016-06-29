@@ -24,19 +24,18 @@ node {
     def isStageCode = branchName.contains('release')
     def isProdCode = branchName.contains('master')
 
-
     // get cluster secret
     if(isDevCode){
         // get dev secret cluster
-        kubeconfig = 'ICESECURE_EU_WEST_1C'
+        kubeconfig = 'ICELANDAIRLABS_EU_WEST_1C'
     }
     if(isStageCode){
         // get stage secret cluster
-        kubeconfig = 'ICESECURE_EU_WEST_1B'
+        kubeconfig = ''
     }
     if(isProdCode){
         // get prod secret cluster
-        kubeconfig = 'ICESECURE_EU_WEST_1A'
+        kubeconfig = ''
     }
 
     echo kubeconfig

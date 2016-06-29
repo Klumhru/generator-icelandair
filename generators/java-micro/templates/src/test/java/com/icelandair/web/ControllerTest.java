@@ -46,7 +46,7 @@ public class ControllerTest {
     when(service.getHello()).thenReturn(model);
     controlMock()
       .perform(
-        get("/hello")
+        get("/api/hello")
       )
       .andExpect(
         status().isOk()

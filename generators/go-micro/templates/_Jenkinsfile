@@ -3,7 +3,6 @@ node {
     env.WORKSPACE = pwd()
     def workspace = env.WORKSPACE
     env.PIPELINE_VERSION = env.BUILD_NUMBER+'-jenkins'
-    def kubeconfig = 'PUT CORRECT PATH HERE e.g./var/lib/jenkins/.kube/icelandairlabs-eu-west-1c'
 
     stage 'Build'
     withEnv(["GOPATH=$workspace/go"]) {
@@ -17,16 +16,42 @@ node {
     step([$class: 'ArtifactArchiver', artifacts: 'coverage.html', excludes: null])
 
     def branchName = env.BRANCH_NAME
-    if (branchName.contains('develop')) {
+    def isProd = env.PRODUCTION == 'true'
+    def kubeconfig = env.KUBECONFIG
+
+
+    def isDevCode = branchName.contains('develop')
+    def isStageCode = branchName.contains('release')
+    def isProdCode = branchName.contains('master')
+
+
+    // get cluster secret
+    if(isDevCode){
+        // get dev secret cluster
+        kubeconfig = 'ICESECURE_EU_WEST_1C'
+    }
+    if(isStageCode){
+        // get stage secret cluster
+        kubeconfig = 'ICESECURE_EU_WEST_1B'
+    }
+    if(isProdCode){
+        // get prod secret cluster
+        kubeconfig = 'ICESECURE_EU_WEST_1A'
+    }
+
+    echo kubeconfig
+    echo branchName
+
+    if ((!isProd && (isDevCode || isStageCode)) || (isProd && isProdCode)){
         stage 'Container'
-        sh 'test -x entrypoint.sh'
-        sh 'chmod +x entrypoint.sh'
         sh 'make docker'
         sh 'make docker-push'
 
         stage 'Deploy'
-        withEnv(["KUBECONFIG=$kubeconfig"]) {
-          sh 'make deployment service'
+        withCredentials([[$class: 'FileBinding', credentialsId: kubeconfig, variable: 'KUBECONFIG']]){
+          stage 'Deploy'
+          sh 'make deployment'
+          sh 'make service'
         }
     }
 }

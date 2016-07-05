@@ -1,7 +1,6 @@
 package com.icelandair;
 
 import io.github.robwin.swagger.test.SwaggerAssertions;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -11,7 +10,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.File;
 
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @IntegrationTest

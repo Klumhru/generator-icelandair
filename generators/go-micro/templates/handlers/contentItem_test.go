@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	baseMiddleware "github.com/Icelandair/micro.base/middleware"
+	baseMiddleware "github.com/Icelandair/go.base/middleware"
 
 	"github.com/Icelandair/micro.testing/contracts"
 	"github.com/Icelandair/micro.testing/mocker"

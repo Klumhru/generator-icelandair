@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	baseHandlers "github.com/Icelandair/micro.base/handlers"
+	baseHandlers "github.com/Icelandair/go.base/handlers"
 	"github.com/gorilla/mux"
 )
 

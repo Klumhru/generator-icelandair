@@ -4,7 +4,7 @@
 > <%= projectDescription %>
 
 ## How to consume
-See [USAGE.md](usage instructions)
+See [usage instructions](USAGE.md)
 
 ## How to contribute
-See [CONTRIBUTING.md](contribution instructions)
+See [contribution instructions](CONTRIBUTING.md)

@@ -18,7 +18,7 @@ var (
 )
 
 func main() {
-	n := negroni.Classic()
+	n := negroni.New(negroni.NewRecovery())
 	log.Printf("Initializing service")
 
 	mux := handlers.NewRouter("some url to an actual service")

@@ -18,8 +18,8 @@ var (
 )
 
 func main() {
-	n := negroni.Classic()
-	log.Printf("Initializing service")
+	n := negroni.New(negroni.NewRecovery())
+	log.Println("Initializing service")
 
 	mux := handlers.NewRouter("some url to an actual service")
   n.Use(middleware.NewLogger("<%= camelProjectName %>"))

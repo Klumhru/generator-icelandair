@@ -1,0 +1,7 @@
+FROM maven:3.3.9-jdk-8
+VOLUME /tmp
+COPY /entrypoint.sh /entrypoint.sh
+ADD target/<%= projectName %>-SNAPSHOT.jar app.jar
+RUN sh -c 'touch /app.jar'
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

@@ -20,24 +20,12 @@ spec:
       containers:
         - name: <%= projectName %>
           image: TPL_DOCKER_IMAGE
-          env:
-            - name: PORT
-              value: "<%= containerPort %>"
-          ports:
-            - containerPort: <%= containerPort %>
-              name: <%= type %>
           volumeMounts:
             - name: host-certs
               readOnly: true
               mountPath: "/etc/ssl/certs"
-            - name: <%= projectName %>-conf-aws
-              readOnly: true
-              mountPath: "/etc/<%= projectName %>/aws"
       volumes:
         - name: host-certs
           hostPath:
             path: /etc/ssl/certs
-        - name: <%= projectName %>-conf-aws
-          secret:
-            secretName: aws-credentials-icecms
 

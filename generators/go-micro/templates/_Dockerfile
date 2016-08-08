@@ -1,8 +1,7 @@
 FROM alpine
 
-COPY /tmp/micro.user /bin/<%= projectName %>
-COPY /entrypoint.sh /entrypoint.sh
+COPY /tmp/<%= projectName %> /bin/micro.<%= projectName %>
 
-RUN chmod +x /entrypoint.sh /bin/<%= projectName %>
+RUN chmod +x /bin/micro.<%= projectName %>
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bin/micro.<%= projectName %>"]

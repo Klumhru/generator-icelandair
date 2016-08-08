@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	baseMiddleware "github.com/Icelandair/micro.base/middleware"
+	baseMiddleware "github.com/Icelandair/go.base/middleware"
 
 	"github.com/Icelandair/micro.testing/contracts"
 	"github.com/Icelandair/micro.testing/mocker"
@@ -29,8 +29,9 @@ func setup(c *C) *httptest.Server {
 
 	router := NewRouter(upstreamProvider.URL + "/api/v1/provider")
 
-	n := negroni.New()
+	n := negroni.New(negroni.NewRecovery())
 
+	n.Use(middleware.NewLogger("<%= camelProjectName %>"))
 	n.Use(baseMiddleware.NewCorrelationTestID())
 
 	n.UseHandler(router)

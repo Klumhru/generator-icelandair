@@ -29,7 +29,7 @@ func (c *ContentItemContext) Handle(w http.ResponseWriter, r *http.Request) {
 	var item models.ContentItem
 
 	item.Text = c.upstreamClient.GetItem()
-
+  // ATN. is there neeed to have timeout between services eg. when connection to webmethods?
 	c.render.JSON(w, http.StatusOK, item)
 }
 

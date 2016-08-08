@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/Icelandair/micro.base/middleware"
+	"github.com/Icelandair/go.base/middleware"
 	"github.com/<%= gitRepo %>/handlers"
 	"github.com/codegangsta/negroni"
 
@@ -18,13 +18,15 @@ var (
 )
 
 func main() {
-	n := negroni.Classic()
-	log.Printf("Initializing service")
+	n := negroni.New(negroni.NewRecovery())
+	log.Println("Initializing service")
 
 	mux := handlers.NewRouter("some url to an actual service")
-	n.Use(middleware.NewCorrelationID())
-	n.Use(middleware.NewLogger("<%= camelProjectName %>"))
-	n.UseHandler(mux)
+  n.Use(middleware.NewLogger("<%= camelProjectName %>"))
+  n.Use(middleware.NewCorrelationID())
+  //n.Use(middleware.NewRequiredLanguageID())
+  //n.Use(middleware.NewRequiredLocationID())
+  n.UseHandler(mux)
 
 	host := fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT"))
 	log.Printf("Starting service on %s\n", host)

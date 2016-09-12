@@ -20,11 +20,12 @@ const confirm = (name = 'confirm', message = 'Message missing!', defaultValue = 
   type: 'confirm',
 })
 
-const list = (name = 'list', message = 'Choose from list', choices = [], _default) => ({
+const list = (name = 'list', message = 'Choose from list', choices = [], _default, _validate) => ({
   name,
   message,
   choices,
   default: _default || (choices[0] || ''),
+  validate: _validate || (() => true),
   type: 'list',
 })
 
@@ -49,9 +50,23 @@ const projectName = (_default) => (
   )
 )
 
-const type = (_default) => list('type', 'Project type', defaults.types, getDefaults(_default).type)
+const type = (_default) => (
+  list(
+    'type',
+    'Project type',
+    defaults.types,
+    getDefaults(_default).type
+  )
+)
 
-const tier = (_default) => list('tier', 'Project tier', defaults.tiers, _default || defaults.tier)
+const tier = (_default) => (
+  list(
+    'tier',
+    'Project tier',
+    defaults.tiers,
+    _default || defaults.tier
+  )
+)
 
 
 const replicaCount = (_default = 2) => (
@@ -72,12 +87,18 @@ const containerPort = (_default = 10000) => (
   )
 )
 
-const projectDescription = (_default = 'Raison d\'être') => (
+const projectDescription = (_default = 'Raison d\'être', _name = false) => (
   input(
     'projectDescription',
-    'What is this the point of this?',
-    _default,
-    (x) => validate.required(x)
+    `Existential purpose${_name ? ` of ${_name}` : ''}?`,
+    _default
+  )
+)
+
+const done = (_name = defaults.projectName) => (
+  confirm(
+    'confirm',
+    'Looks good to me!'
   )
 )
 
@@ -93,4 +114,5 @@ module.exports = {
   replicaCount,
   containerPort,
   projectDescription,
+  done,
 }

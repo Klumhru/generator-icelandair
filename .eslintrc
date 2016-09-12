@@ -1,15 +1,14 @@
-{
-  "extends": "icelandair",
-  "rules": {
-    "no-unsafe-finally": ["off"],
-    "no-useless-computed-key": ["off"],
-    "no-console": ["off"],
-    "no-underscore-dangle": ["off"],
-    "no-param-reassign": ["off"]
-  },
-  "env": {
-    "browser": false,
-    "node": true,
-    "es6": true
-  }
-}
+---
+extends: icelandair
+
+env:
+  browser: false
+  node: true
+  es6: true
+
+rules:
+  no-console: off
+  no-param-reassign: off
+  no-underscore-dangle: off
+  no-unsafe-finally: off
+  no-useless-computed-key: off

@@ -1,65 +1,114 @@
 const yeoman = require('yeoman-generator')
 const _s = require('underscore.string')
 const chalk = require('chalk')
+const superb = require('superb')
+const gitInit = require('../_util/git')
+const { defaults } = require('../_util/defaults')
 const prompts = require('../_util/prompts')
 const { coffeeFencing } = require('../_util/console')
 
 module.exports = yeoman.Base.extend({
-  prompting() {
-    const cb = this.async()
-
-    if (!this.options.nested) {
-      console.log(chalk.bold.yellow('Run `yo icelandair` to get started'))
-      return
+  initializing() {
+    this.tpl = {
+      projectType: 'java-micro',
     }
+  },
 
-    const promptArr = []
+  prompting: {
+    askForProjectName() {
+      const done = this.async()
 
-    promptArr.push(prompts.projectName(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.type(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.tier)
-    promptArr.push(prompts.replicaCount)
-    promptArr.push(prompts.containerPort)
-    promptArr.push(prompts.projectDescription)
+      this.prompt(prompts.input(
+        'projectName',
+        `What's the name of your ${superb()} java micro service?`,
+        defaults.projectName,
+        (x) => x.trim()
+      ), ({ projectName }) => {
+        Object.assign(this.tpl, {
+          projectName,
+          camelProjectName: _s.camelize(projectName),
+          projectPkgName: _s.slugify(projectName),
+        })
 
-    this.prompt(promptArr, (props) => {
-      const tpl = {
-        projectName: props.projectName,
-        camelProjectName: _s.camelize(props.projectName),
-        type: props.type,
-        tier: props.tier,
-        replicaCount: props.replicaCount,
-        containerPort: props.containerPort,
-        projectDescription: props.projectDescription,
-        name: this.user.git.name(),
-        email: this.user.git.email(),
-        gitRepo: this.options.gitRepo,
-      }
+        done()
+      })
+    },
+
+    askForGitRepo() {
+      const done = this.async()
+
+      this.prompt(prompts.gitRepo(), (answers) => {
+        Object.assign(this.tpl, answers, {
+          name: this.user.git.name(),
+          email: this.user.git.email(),
+        })
+
+        done()
+      })
+    },
+
+    askForProjectDescription() {
+      const done = this.async()
+
+      this.prompt(prompts.projectDescription(undefined, this.tpl.projectName), (answers) => {
+        Object.assign(this.tpl, answers)
+
+        done()
+      })
+    },
+
+    askForTheRest() {
+      const done = this.async()
+
+      const promptArr = []
+      promptArr.push(prompts.type(this.options.gitRepo.split('/').pop()))
+      promptArr.push(prompts.tier)
+      promptArr.push(prompts.replicaCount)
+      promptArr.push(prompts.containerPort)
+
+      this.prompt(promptArr, (answers) => {
+        Object.assign(this.tpl, answers)
+
+        done()
+      })
+    },
+  },
+
+  writing: {
+    projectfiles() {
+      const done = this.async()
+
+      this.fs.copyTpl([
+        `${this.templatePath()}/**`,
+      ], this.destinationPath(), this.tpl)
 
       const rename = (from, to) => {
         this.fs.move(this.destinationPath(from), this.destinationPath(to))
       }
 
-      this.fs.copyTpl([
-        `${this.templatePath()}/**`,
-      ], this.destinationPath(), tpl)
-
       rename('_editorconfig', '.editorconfig')
       rename('_gitattributes', '.gitattributes')
       rename('_gitignore', '.gitignore')
       rename('_dockerignore', '.dockerignore')
-      rename('service-name.deployment.yml', `micro.${tpl.projectName}.deployment.yml`)
-      rename('service-name.service.yml', `micro.${tpl.projectName}.service.yml`)
+      rename('service-name.deployment.yml', `micro.${this.tpl.projectName}.deployment.yml`)
+      rename('service-name.service.yml', `micro.${this.tpl.projectName}.service.yml`)
       rename('_Dockerfile', 'Dockerfile')
       rename('_Jenkinsfile', 'Jenkinsfile')
       rename('_Makefile', 'Makefile')
 
-      cb()
-    })
-  },
-  install() {
-    console.log(chalk.blue.bold('Installing dependencies.'))
-    console.log(chalk.cyan.bold('This might take a while – maybe go for some coffee, or duel?'))
-    coffeeFencing()
+      done()
+    },
+
+    initGit() {
+      const done = this.async()
+      gitInit(this.tpl, this.spawnCommandSync)
+      done()
+    },
+
+    goPlay() {
+      console.log(chalk.blue.bold('All set to go!'))
+      console.log(chalk.cyan.bold('You earned yourself a break – maybe go for some java (pun intended), or duel?'))
+      coffeeFencing()
+    },
   },
 })

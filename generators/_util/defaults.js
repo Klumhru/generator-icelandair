@@ -41,6 +41,10 @@ const _parseNameAndType = (name) => {
     }
   }
 
+  if (pName.indexOf('mozaik-ext-') === 0) {
+    pName = pName.split('-ext-').pop()
+  }
+
   return [pName, pType]
 }
 

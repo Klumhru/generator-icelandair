@@ -1,85 +1,133 @@
 const yeoman = require('yeoman-generator')
 const _s = require('underscore.string')
 const chalk = require('chalk')
+const superb = require('superb')
+const gitInit = require('../_util/git')
+const { defaults } = require('../_util/defaults')
 const prompts = require('../_util/prompts')
-const { coffeeFencing } = require('../_util/console')
+const { coffeeFencing, bail, lgtm } = require('../_util/console')
 
 module.exports = yeoman.Base.extend({
-  prompting() {
-    const cb = this.async()
-
-    if (!this.options.nested) {
-      console.log(chalk.bold.yellow('Run `yo icelandair` to get started'))
-      return
+  initializing() {
+    this.tpl = {
+      projectType: 'go-micro',
     }
+  },
 
-    const promptArr = []
+  prompting: {
+    askForProjectName() {
+      const done = this.async()
 
-    promptArr.push(prompts.projectName(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.type(this.options.gitRepo.split('/').pop()))
-    promptArr.push(prompts.tier)
-    promptArr.push(prompts.replicaCount)
-    promptArr.push(prompts.containerPort)
-    promptArr.push(prompts.projectDescription)
+      this.prompt(prompts.input(
+        'projectName',
+        `What's the name of your ${superb()} node service?`,
+        defaults.projectName,
+        (x) => x.trim()
+      ), ({ projectName }) => {
+        Object.assign(this.tpl, {
+          projectName,
+          camelProjectName: _s.camelize(projectName),
+          projectPkgName: _s.slugify(projectName),
+        })
 
-    this.prompt(promptArr, (props) => {
-      const tpl = {
-        projectName: props.projectName,
-        camelProjectName: _s.camelize(props.projectName),
-        type: props.type,
-        tier: props.tier,
-        replicaCount: props.replicaCount,
-        containerPort: props.containerPort,
-        projectDescription: props.projectDescription,
-        name: this.user.git.name(),
-        email: this.user.git.email(),
-      }
+        done()
+      })
+    },
 
-      const mv = (from, to) => {
-        this.fs.move(this.destinationPath(from), this.destinationPath(to))
-      }
+    askForGitRepo() {
+      const done = this.async()
+
+      this.prompt(prompts.gitRepo(), (answers) => {
+        Object.assign(this.tpl, answers, {
+          name: this.user.git.name(),
+          email: this.user.git.email(),
+        })
+
+        done()
+      })
+    },
+
+    askForProjectDescription() {
+      const done = this.async()
+
+      this.prompt(prompts.projectDescription(undefined, this.tpl.projectName), (answers) => {
+        Object.assign(this.tpl, answers)
+
+        done()
+      })
+    },
+
+    askForServiceStuff() {
+      const done = this.async()
+
+      const promptArr = []
+      promptArr.push(prompts.type(this.tpl.gitRepo.split('/').pop()))
+      promptArr.push(prompts.tier())
+      promptArr.push(prompts.replicaCount())
+      promptArr.push(prompts.containerPort())
+
+      this.prompt(promptArr, (answers) => {
+        Object.assign(this.tpl, answers)
+
+        done()
+      })
+    },
+
+    askForConfirmation() {
+      const done = this.async()
+
+      this.log(
+        chalk.green('- ') +
+        chalk.cyan.bold('That\'s all folks! Please confirm that the config above is correct')
+      )
+
+      this.prompt(prompts.done(), (answers) => {
+        Object.assign(this.tpl, answers)
+
+        done()
+      })
+    },
+  },
+
+  writing: {
+    projectfiles() {
+      if (!this.tpl.confirm) { return }
+
+      const done = this.async()
 
       this.fs.copyTpl([
         `${this.templatePath()}/**`,
-      ], this.destinationPath(), tpl)
+      ], this.destinationPath(), this.tpl)
 
-      mv('_babelrc', '.babelrc')
-      mv('_editorconfig', '.editorconfig')
-      mv('_eslintrc', '.eslintrc')
-      mv('_gitattributes', '.gitattributes')
-      mv('_gitignore', '.gitignore')
-      mv('_package.json', 'package.json')
-      mv('service-name.deployment.yml', `${tpl.projectName}.deployment.yml`)
-      mv('service-name.service.yml', `${tpl.projectName}.service.yml`)
+      const rename = (from, to) => this.fs.move(this.destinationPath(from), this.destinationPath(to))
 
-      cb()
-    })
-  },
-  install() {
-    console.log(chalk.blue.bold('Installing dependencies.'))
-    console.log(chalk.cyan.bold('This might take a while – maybe go for some coffee, or duel?'))
-    coffeeFencing()
+      rename('_babelrc', '.babelrc')
+      rename('_editorconfig', '.editorconfig')
+      rename('_eslintrc', '.eslintrc')
+      rename('_gitattributes', '.gitattributes')
+      rename('_gitignore', '.gitignore')
+      rename('_package.json', 'package.json')
+      rename('service-name.deployment.yml', `${this.tpl.projectName}.deployment.yml`)
+      rename('service-name.service.yml', `${this.tpl.projectName}.service.yml`)
 
-    this.npmInstall([
-      'babel-plugin-transform-runtime',
-      'koa',
-      'koa-router',
-    ], { save: true, stdio: 'ignore' })
-    this.npmInstall([
-      'ava',
-      'babel-cli',
-      'babel-eslint',
-      'babel-plugin-add-module-exports',
-      'babel-plugin-syntax-async-functions',
-      'babel-plugin-transform-regenerator',
-      'babel-preset-es2015',
-      'babel-register',
-      'eslint',
-      'eslint-config-airbnb',
-      'nyc',
-      'supertest',
-      'supertest-as-promised',
-      'supervisor',
-    ], { saveDev: true, stdio: 'ignore' })
+      done()
+    },
+
+    initGit() {
+      if (!this.tpl.confirm) { return }
+
+      const done = this.async()
+      gitInit(this.tpl, this.spawnCommandSync)
+      done()
+    },
+
+    goPlay() {
+      if (!this.tpl.confirm) {
+        bail()
+      } else {
+        lgtm()
+        coffeeFencing()
+      }
+    },
   },
 })

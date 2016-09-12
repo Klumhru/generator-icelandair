@@ -23,7 +23,7 @@ const _isEmpty = (value) => {
   } else if (_typeof(value) === 'number') {
     return value.toString().length === 0
   }
-  return value.length === 0
+  return value === undefined || value.length === 0
 }
 const _isNumber = (value) => _typeof(value) === 'number'
 

@@ -22,6 +22,18 @@ ifndef DOCKER_IMAGE
 	DOCKER_IMAGE := ${DOCKER_REGISTRY_HOST}/${PROJECT_NAME}/${COMPONENT}:${PIPELINE_VERSION}
 endif
 
+ifndef HOST
+	HOST := localhost
+endif
+
+ifndef TEST_HOST
+	TEST_HOST := routes
+endif
+
+ifndef PORT
+	PORT := 10000
+endif
+
 # Development
 provision:
 	@go get -t ./...
@@ -34,7 +46,12 @@ test:
 	#go get -u github.com/go-swagger/go-swagger/cmd/swagger
 	@swagger validate ./contracts/downstream/SomeConsumer/contract.yml
 	@go get github.com/jstemmer/go-junit-report
-	@go test -v ./... | go-junit-report > report.xml
+	go test -v ./... -check.f "Integration|Unit" | go-junit-report > report.xml
+
+end-to-end-test:
+	go get github.com/jstemmer/go-junit-report
+	#go test -run 'Integration' -v ./... #| go-junit-report > report.xml
+	go test -v ./... -check.f "EndToEnd" | go-junit-report > report_e2e.xml
 
 cov:
 	@go test ./handlers -coverprofile=cover.out
@@ -42,6 +59,9 @@ cov:
 
 bench:
 	@go  test ./... -bench=".*"
+
+run:
+	. etc/MICROSERVICENAME/database/database-credentials.env &&	fresh
 
 build:
 	go get ./...
@@ -73,7 +93,6 @@ docker-test:
 		-w /go/src/github.com/Icelandair/micro.<%= projectName %> \
 		golang:1.5 make docker-test-internal
 
-
 docker-test-internal:
 	# Don't use this on developer machines, it's for internal docker build
 	# It will fuck up your git configuration
@@ -87,6 +106,27 @@ docker-test-internal:
 	go get github.com/AlekSi/gocov-xml
 	gocov test ./... | gocov-xml > coverage.xml
 
+docker-e2e:
+	docker run --rm -v ${HOME}/.ssh:/root/.ssh \
+		-v ${PWD}:/go/src/github.com/Icelandair/micro.<%= projectName %> \
+		-w /go/src/github.com/Icelandair/micro.<%= projectName %> \
+		--link routes \
+		--net microroutes_default \
+		-e "TEST_HOST=${TEST_HOST}" \
+		golang:1.7 make docker-e2e-internal
+
+docker-e2e-internal:
+	# Don't use this on developer machines, it's for internal docker build
+	# It will fuck up your git configuration
+	git config --global url."git@github.com:".insteadOf "https://github.com/"
+	go get -t ./...
+	go get github.com/jstemmer/go-junit-report
+	go test -v ./... -check.f "EndToEnd" | go-junit-report > report_e2e.xml
+	go test ./handlers -coverprofile=cover.out -check.f "EndToEnd"
+	go tool cover -html=cover.out -o coverage_e2e.html
+	go get github.com/axw/gocov/...
+	go get github.com/AlekSi/gocov-xml
+	gocov test ./... -check.f "EndToEnd" | gocov-xml > coverage_e2e.xml
 
 # Builder container
 docker-builder:

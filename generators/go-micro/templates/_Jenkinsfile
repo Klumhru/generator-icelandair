@@ -15,6 +15,18 @@ node {
     step([$class: 'JUnitResultArchiver', testResults: 'report.xml'])
     step([$class: 'ArtifactArchiver', artifacts: 'coverage.html', excludes: null])
 
+    stage 'E2E Test'
+    try{
+      sh 'docker-compose -p micro<%= projectName %> up -d --build'
+      sh 'make docker-e2e'
+      step([$class: 'JUnitResultArchiver', testResults: 'report_e2e.xml'])
+      step([$class: 'ArtifactArchiver', artifacts: 'coverage_e2e.html', excludes: null])
+      sh 'docker-compose -p micro<%= projectName %> down'
+    } catch (Exception e) {
+        sh 'docker-compose -p micro<%= projectName %> down'
+        throw e; // rethrow so the build is considered failed
+    }
+
     def branchName = env.BRANCH_NAME
     def isProd = env.PRODUCTION == 'true'
     def kubeconfig = env.KUBECONFIG
@@ -27,7 +39,7 @@ node {
     // get cluster secret
     if(isDevCode){
         // get dev secret cluster
-        kubeconfig = 'ICELANDAIRLABS_EU_WEST_1C'
+        kubeconfig = 'DEV_ICELANDAIR_EU_WEST_1A'
     }
     if(isStageCode){
         // get stage secret cluster
@@ -39,14 +51,12 @@ node {
     }
 
     echo kubeconfig
-    echo branchName
 
     if ((!isProd && (isDevCode || isStageCode)) || (isProd && isProdCode)){
         stage 'Container'
         sh 'make docker'
         sh 'make docker-push'
 
-        stage 'Deploy'
         withCredentials([[$class: 'FileBinding', credentialsId: kubeconfig, variable: 'KUBECONFIG']]){
           stage 'Deploy'
           sh 'make deployment'

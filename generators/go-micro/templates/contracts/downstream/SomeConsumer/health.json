@@ -1,9 +1,11 @@
 {
-  "/health": {
+  "/health/": {
     "get": {
       "request": {
-        "method": "GET",
-        "url": "/health"
+        "headers": {
+          "Accept": "application/json; charset=utf-8; sub-type=web",
+          "X-Correlation-Id": "ContentCorrelationId"
+        }
       },
       "response": {
         "status": 200,

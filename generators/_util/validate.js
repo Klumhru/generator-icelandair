@@ -19,11 +19,11 @@ const _isEmpty = (value) => {
         return false
       }
     }
-    return true
+    return value
   } else if (_typeof(value) === 'number') {
     return value.toString().length === 0
   }
-  return value === undefined || value.length === 0
+  return (value === undefined || value.length === 0) ? value : false
 }
 const _isNumber = (value) => _typeof(value) === 'number'
 
@@ -35,10 +35,10 @@ const dns = (value) => {
   } else if (value.length > 28) {
     return 'Must be DNS compliant, max 28 characters'
   }
-  return true
+  return value
 }
 
-const number = (value) => (_isNumber(value) ? true : 'Only numbers allowed')
+const number = (value) => (_isNumber(value) ? value : 'Only numbers allowed')
 
 const port = (value) => {
   if (_isEmpty(value)) {
@@ -48,7 +48,7 @@ const port = (value) => {
   } else if (value < 1025 || value > 65534) {
     return 'Port out of range, valid range 1025 - 65534'
   }
-  return true
+  return value
 }
 
 module.exports = {

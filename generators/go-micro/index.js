@@ -108,6 +108,8 @@ module.exports = yeoman.Base.extend({
       rename('_Dockerfile', 'Dockerfile')
       rename('_Jenkinsfile', 'Jenkinsfile')
       rename('_Makefile', 'Makefile')
+      rename('./etc/MICROSERVICENAME/database/database-credentials.env',
+        `./etc/${this.tpl.projectName}/database/database-credentials.env`)
 
       done()
     },

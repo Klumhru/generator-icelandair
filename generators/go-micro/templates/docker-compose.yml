@@ -1,0 +1,28 @@
+version: '2'
+services:
+  routes:
+    build: .
+    image: go-test-runner:latest
+    ports:
+     - "10000:10000"
+    environment:
+      - PORT=10000
+      - DB_PASS=Al1Ag1Au1
+      - DB_USER=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=THE_DB_NAME
+    depends_on:
+     - db
+    links:
+     - db
+    container_name: routes
+  db:
+    image: postgres:9.4.9
+    container_name: db-<%= projectName %>
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_PASSWORD=Al1Ag1Au1
+    volumes:
+      - ./integration/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

@@ -8,6 +8,7 @@ import (
 	baseMiddleware "github.com/Icelandair/go.base/middleware"
 
 	"github.com/Icelandair/micro.testing/contracts"
+	"github.com/Icelandair/micro.testing/integration_testing"
 	"github.com/Icelandair/micro.testing/mocker"
 	"github.com/codegangsta/negroni"
 
@@ -31,8 +32,8 @@ func setup(c *C) *httptest.Server {
 
 	n := negroni.New(negroni.NewRecovery())
 
-	n.Use(middleware.NewLogger("<%= camelProjectName %>"))
-	n.Use(baseMiddleware.NewCorrelationTestID())
+	n.Use(baseMiddleware.NewLogger("<%= camelProjectName %>"))
+	n.Use(baseMiddleware.NewRequiredCorrelationTestID())
 
 	n.UseHandler(router)
 
@@ -49,11 +50,18 @@ func Test(t *testing.T) {
 	TestingT(t)
 }
 
-type ContractSuite struct {
+type TestSuite struct {
 }
 
-var _ = Suite(&ContractSuite{})
+var _ = Suite(&TestSuite{})
 
-func (s *ContractSuite) TestContract(c *C) {
+func (s *TestSuite) TestIntegrationContract(c *C) {
 	contracts.TestContracts(s, c, "../contracts/downstream", setup, teardown)
+}
+
+func (s *TestSuite) TestEndToEndContract(c *C) {
+	// Skip end to end tests when short -- ie local dev
+	if !testing.Short() {
+		integrationTesting.IntegrationTestContracts(s, c, "../contracts/downstream/", setup, teardown)
+	}
 }

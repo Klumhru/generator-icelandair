@@ -6,6 +6,9 @@
 # Folders
 _obj
 _test
+tmp/
+etc/
+certs/
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -31,9 +34,12 @@ node_modules
 
 ## Test file running make test, make cov or make bench
 report.xml
+report_e2e.xml
 coverage.xml
+coverage_e2e.xml
 cover.out
 coverage.html
+coverage_e2e.html
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio

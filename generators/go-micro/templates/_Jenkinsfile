@@ -40,14 +40,17 @@ node {
     if(isDevCode){
         // get dev secret cluster
         kubeconfig = 'DEV_ICELANDAIR_EU_WEST_1A'
+        env.RUNTIME_ENVIRONMENT='DEV'
     }
     if(isStageCode){
-        // get stage secret cluster
-        kubeconfig = ''
+      // get stage secret cluster
+      kubeconfig = 'ICESECURE_EU_WEST_1A'
+      env.RUNTIME_ENVIRONMENT='STAGE'
     }
     if(isProdCode){
-        // get prod secret cluster
-        kubeconfig = ''
+      // get prod secret cluster
+      kubeconfig = ''
+      env.RUNTIME_ENVIRONMENT='PRODUCTION'
     }
 
     echo kubeconfig

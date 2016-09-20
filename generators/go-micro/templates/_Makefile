@@ -78,7 +78,7 @@ docker-build:
 	docker run --rm -v ${HOME}/.ssh:/root/.ssh \
 		-v ${PWD}:/go/src/github.com/Icelandair/micro.<%= projectName %> \
 		-w /go/src/github.com/Icelandair/micro.<%= projectName %> \
-		golang:1.5 make docker-build-internal
+		golang:1.7 make docker-build-internal
 
 docker-build-internal:
 	# Don't use this on developer machines, it's for internal docker build
@@ -91,7 +91,7 @@ docker-test:
 	docker run --rm -v ${HOME}/.ssh:/root/.ssh \
 		-v ${PWD}:/go/src/github.com/Icelandair/micro.<%= projectName %> \
 		-w /go/src/github.com/Icelandair/micro.<%= projectName %> \
-		golang:1.5 make docker-test-internal
+		golang:1.7 make docker-test-internal
 
 docker-test-internal:
 	# Don't use this on developer machines, it's for internal docker build

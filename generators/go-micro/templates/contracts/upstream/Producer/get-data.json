@@ -14,7 +14,7 @@
           "X-Correlation-Id": "TestCorrelationId; ContentCorrelationId"
         },
         "content": {
-          "text": "Some upstream text"
+          "text": "Error getting item"
         }
       }
     }

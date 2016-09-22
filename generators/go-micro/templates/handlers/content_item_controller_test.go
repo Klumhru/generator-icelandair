@@ -7,10 +7,10 @@ import (
 
 	baseMiddleware "github.com/Icelandair/go.base/middleware"
 
-	"github.com/Icelandair/micro.testing/contracts"
+	"github.com/Icelandair/go.testing/contracts"
   "github.com/<%= gitRepo %>/db"
-	"github.com/Icelandair/micro.testing/integration_testing"
-	"github.com/Icelandair/micro.testing/mocker"
+	"github.com/Icelandair/go.testing/integration_testing"
+	"github.com/Icelandair/go.testing/mocker"
 	"github.com/codegangsta/negroni"
 
 	. "gopkg.in/check.v1"

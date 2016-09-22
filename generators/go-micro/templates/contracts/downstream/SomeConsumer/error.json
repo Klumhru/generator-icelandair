@@ -1,5 +1,5 @@
 {
-  "/api/vi/<%= camelProjectName %>/error/": {
+  "/api/v1/<%= camelProjectName %>/error/": {
     "get": {
       "request": {
         "query": {

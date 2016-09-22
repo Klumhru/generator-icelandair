@@ -1,21 +1,25 @@
 {
-  "/api/vi/<%= camelProjectName %>/health/": {
+  "/api/v1/<%= camelProjectName %>/health/": {
     "get": {
       "request": {
         "query": {
           "locationId": "us",
-          "languageId": "en"
+          "languageId": "en-us"
         },
         "headers": {
           "Accept": "application/json; charset=utf-8; sub-type=web",
-          "X-Correlation-Id": "ContentCorrelationId"
+          "X-Correlation-Id": "CorrelationId"
         }
       },
       "response": {
         "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8",
+          "X-Correlation-Id": "testcorrelationid; CorrelationId"
+        },
         "content": {
-          "status": "OK",
-          "message": ""
+          "message": "",
+          "status": "OK"
         }
       }
     }

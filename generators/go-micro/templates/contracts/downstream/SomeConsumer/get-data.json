@@ -1,5 +1,5 @@
 {
-  "/api/vi/<%= camelProjectName %>/item/": {
+  "/api/v1/<%= camelProjectName %>/item/": {
     "get": {
       "request": {
         "query": {
@@ -18,7 +18,7 @@
           "X-Correlation-Id": "TestCorrelationId; ContentCorrelationId"
         },
         "content": {
-          "text": "Some upstream text"
+          "text": "Error getting item"
         }
       }
     }

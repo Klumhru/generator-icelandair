@@ -8,11 +8,15 @@ import (
 	baseMiddleware "github.com/Icelandair/go.base/middleware"
 
 	"github.com/Icelandair/micro.testing/contracts"
+  "github.com/Icelandair/<%= gitRepo %>/db"
 	"github.com/Icelandair/micro.testing/integration_testing"
 	"github.com/Icelandair/micro.testing/mocker"
 	"github.com/codegangsta/negroni"
 
 	. "gopkg.in/check.v1"
+  "os"
+  "fmt"
+  "github.com/Icelandair/<%= gitRepo %>/utils"
 )
 
 var (
@@ -23,21 +27,26 @@ var (
 )
 
 func setup(c *C) *httptest.Server {
+  serviceName := "<%= camelProjectName %>"
 
 	upstreamProvider = mocker.MockContracts("../contracts/upstream")
-
-	contentItem = NewContentItemContext(upstreamProvider.URL)
-
-	router := NewRouter(upstreamProvider.URL + "/api/v1/provider")
+  // todo remove if no use for db
+  fetcher := &db.SomeDBModelAccessMock{}
+  runtimeEnvironment := fmt.Sprintf("%s", os.Getenv("RUNTIME_ENVIRONMENT"))
+  logger := baseMiddleware.NewLogger(serviceName, runtimeEnvironment)
+  mux := NewRouter(serviceName, runtimeEnvironment, *logger, fetcher)
 
 	n := negroni.New(negroni.NewRecovery())
+  n.Use(baseMiddleware.NewRequiredCorrelationTestID(serviceName, runtimeEnvironment))
+  n.Use(baseMiddleware.NewRequiredLanguageID())
+  n.UseHandler(mux)
 
-	n.Use(baseMiddleware.NewLogger("<%= camelProjectName %>"))
-	n.Use(baseMiddleware.NewRequiredCorrelationTestID())
-
-	n.UseHandler(router)
-
-	server = httptest.NewServer(n)
+  server = httptest.NewServer(n)
+  host := fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT"))
+  message := fmt.Sprintf("Starting service on %s\n", host)
+  nodeName := fmt.Sprintf("%s\n", os.Getenv("HOSTNAME"))
+  fields := utils.GetServerMessage(nodeName, serviceName, "controllerTest", runtimeEnvironment)
+  logger.Logger.WithFields(fields).Info(message)
 	return server
 }
 

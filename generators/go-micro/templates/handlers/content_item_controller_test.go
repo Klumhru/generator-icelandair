@@ -8,7 +8,7 @@ import (
 	baseMiddleware "github.com/Icelandair/go.base/middleware"
 
 	"github.com/Icelandair/micro.testing/contracts"
-  "github.com/Icelandair/<%= gitRepo %>/db"
+  "github.com/<%= gitRepo %>/db"
 	"github.com/Icelandair/micro.testing/integration_testing"
 	"github.com/Icelandair/micro.testing/mocker"
 	"github.com/codegangsta/negroni"
@@ -16,7 +16,7 @@ import (
 	. "gopkg.in/check.v1"
   "os"
   "fmt"
-  "github.com/Icelandair/<%= gitRepo %>/utils"
+  "github.com/<%= gitRepo %>/utils"
 )
 
 var (
@@ -34,7 +34,7 @@ func setup(c *C) *httptest.Server {
   fetcher := &db.SomeDBModelAccessMock{}
   runtimeEnvironment := fmt.Sprintf("%s", os.Getenv("RUNTIME_ENVIRONMENT"))
   logger := baseMiddleware.NewLogger(serviceName, runtimeEnvironment)
-  mux := NewRouter(serviceName, runtimeEnvironment, *logger, fetcher)
+  mux := NewRouter(upstreamProvider.URL, serviceName, runtimeEnvironment, *logger, fetcher)
 
 	n := negroni.New(negroni.NewRecovery())
   n.Use(baseMiddleware.NewRequiredCorrelationTestID(serviceName, runtimeEnvironment))
@@ -42,12 +42,12 @@ func setup(c *C) *httptest.Server {
   n.UseHandler(mux)
 
   server = httptest.NewServer(n)
-  host := fmt.Sprintf("%s:%s", os.Getenv("HOST"), os.Getenv("PORT"))
+  host := fmt.Sprintf("%s:%s", os.Getenv("HOSTNAME"), os.Getenv("PORT"))
   message := fmt.Sprintf("Starting service on %s\n", host)
-  nodeName := fmt.Sprintf("%s\n", os.Getenv("HOSTNAME"))
-  fields := utils.GetServerMessage(nodeName, serviceName, "controllerTest", runtimeEnvironment)
+  fields := utils.GetLogMessage(serviceName, "-1","-1", "main", runtimeEnvironment, nil)
   logger.Logger.WithFields(fields).Info(message)
-	return server
+
+  return server
 }
 
 func teardown() {

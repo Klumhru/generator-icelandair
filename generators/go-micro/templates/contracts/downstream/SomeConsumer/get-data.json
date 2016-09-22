@@ -1,7 +1,11 @@
 {
-  "/item/": {
+  "/api/vi/<%= camelProjectName %>/item/": {
     "get": {
       "request": {
+        "query": {
+          "locationId": "us",
+          "languageId": "en"
+        },
         "headers": {
           "Accept": "application/json; charset=utf-8; sub-type=web",
           "X-Correlation-Id": "ContentCorrelationId"

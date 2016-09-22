@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -18,7 +17,7 @@ import (
 func main() {
   serviceName := "<%= camelProjectName %>"
   // todo if need for db, else remove
-  fetcher := &db.SomeDBModel{
+  fetcher := &db.SomeDBModelAccess{
     Database: db.InitDB(),
   }
 
@@ -30,19 +29,16 @@ func main() {
   mux := handlers.NewRouter("Url to client e.g. http://www.icelandair.is/servlet/rest/labs", serviceName, runtimeEnvironment, *logger, fetcher)
   n.Use(logger)
 
-  cid := baseMiddleware.NewRequiredCorrelationID(serviceName, runtimeEnvironment)
-  corrid, _ := cid.GenerateID()
-  n.Use(cid)
+  n.Use(baseMiddleware.NewRequiredCorrelationID(serviceName, runtimeEnvironment))
 
-  //.Use(baseMiddleware.NewRequiredLanguageID())
+  n.Use(baseMiddleware.NewRequiredLanguageID())
 
   n.UseHandler(mux)
 
   host := fmt.Sprintf("%s:%s", os.Getenv("HOSTNAME"), os.Getenv("PORT"))
-  nodeName := fmt.Sprintf("%s", os.Getenv("HOSTNAME"))
   message := fmt.Sprintf("Starting service on %s\n", host)
-  fields := utils.GetServerMessage(nodeName, serviceName, "main", runtimeEnvironment)
+  fields := utils.GetLogMessage(serviceName, "-1","-1", "main", runtimeEnvironment, nil)
   logger.Logger.WithFields(fields).Info(message)
-  logger.Logger.WithFields(fields).Info("Using baseMiddleware.NewRequiredCorrelationID: %v\n", corrid)
+
   graceful.Run(host, 10*time.Second, n)
 }

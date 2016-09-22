@@ -3,14 +3,13 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Icelandair/<%= gitRepo %>/clients"
-	"github.com/Icelandair/<%= gitRepo %>/models"
+	"github.com/<%= gitRepo %>/clients"
+	"github.com/<%= gitRepo %>/models"
 	"github.com/unrolled/render"
 
-  "github.com/Icelandair/<%= gitRepo %>/db"
-  "github.com/gorilla/mux"
-  "github.com/Icelandair/go.base/middleware"
-  "github.com/Icelandair/<%= gitRepo %>/utils"
+  "github.com/<%= gitRepo %>/db"
+  baseMiddleware "github.com/Icelandair/go.base/middleware"
+  "github.com/<%= gitRepo %>/utils"
 
 )
 
@@ -18,18 +17,19 @@ import (
 type ContentItemContext struct {
 	upstreamClient *clients.UpstreamProviderClient
 	render *render.Render
-  routes db.<%= camelProjectName %>/Accesser
-  logger *middleware.Logger
+  fetcher db.SomeDBModelAccesser
+  logger *baseMiddleware.Logger
   name string
   runtimeEnvironment string
 
 }
 
 // NewContentItemContext instance
-func NewContentItemContext(upstreamProviderURL string, name string, runtimeEnvironment string, logger middleware.Logger, routes db.<%= camelProjectName %>/Accesser) *ContentItemContext {
+func NewContentItemContext(upstreamProviderURL string, name string, runtimeEnvironment string, logger baseMiddleware.Logger, fetcher db.SomeDBModelAccesser) *ContentItemContext {
 	c := ContentItemContext{}
 	c.upstreamClient = clients.NewUpstreamProviderClient(upstreamProviderURL)
 	c.render = render.New()
+  c.fetcher = fetcher
   c.logger = &logger
   c.name = name
   c.runtimeEnvironment = runtimeEnvironment

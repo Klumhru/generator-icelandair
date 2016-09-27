@@ -12,13 +12,13 @@ func NewRouter(upstreamProviderURL string, name string, runtimeEnvironment strin
 	router := mux.NewRouter().StrictSlash(true)
 	contentItem := NewContentItemContext(upstreamProviderURL, name, runtimeEnvironment, logger, fetcher)
 
-	health := handlers.NewHealthContext()
-	router.HandleFunc("/api/v1/<%= camelProjectName %>/health/", health.Handle)
 
 	router.Methods("GET").Path("/api/{id:v[0-9]+}/<%= camelProjectName %>/item/").HandlerFunc(contentItem.Handle)
-	router.Methods("GET").Path("/api/{id:v[0-9]+}/<%= camelProjectName %>/error/").HandlerFunc(contentItem.Generate500Error)
 	router.Methods("GET").Path("/api/{id:v[0-9]+}/<%= camelProjectName %>/").HandlerFunc(contentItem.Handle)
 
+  health := handlers.NewHealthContext()
+	router.HandleFunc("/health", health.Handle)
+	router.HandleFunc("/health/", health.Handle)
 
 	return router
 }

@@ -64,6 +64,21 @@ type TestSuite struct {
 
 var _ = Suite(&TestSuite{})
 
+func (s *TestSuite) TestIntegrationHealth(c *C) {
+	server := setup(c)
+	defer teardown()
+	if server == nil {
+		panic("server is nil")
+	}
+
+	req, _ := http.NewRequest("GET", server.URL+"/health/", nil)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		c.Errorf("\nGot error requesting /health/, err: %v\n", err)
+	}
+	c.Check(res.StatusCode, Equals, http.StatusOK, Commentf("testing: /health/, %v", res))
+}
+
 func (s *TestSuite) TestIntegrationContract(c *C) {
 	contracts.TestContracts(s, c, "../contracts/downstream", setup, teardown)
 }

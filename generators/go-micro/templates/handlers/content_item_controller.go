@@ -46,13 +46,3 @@ func (c *ContentItemContext) Handle(w http.ResponseWriter, r *http.Request) {
   c.logger.Logger.WithFields(fields).Debug("Find site tree")
   c.render.JSON(w, http.StatusOK, item)
 }
-
-// Generate500Error returns a 500 error
-func (c *ContentItemContext) Generate500Error(w http.ResponseWriter, r *http.Request) {
-	var error models.Error
-	error.Code = 500
-	error.Message = "Fake 500 error"
-  fields := utils.GetLogMessage(c.name, "some info e.g. siteid", "more info", "NameOfMethod e.g. Generate500Error in this case", c.runtimeEnvironment, r)
-  c.logger.Logger.WithFields(fields).Error(error.Message)
-	c.render.JSON(w, http.StatusInternalServerError, error)
-}
